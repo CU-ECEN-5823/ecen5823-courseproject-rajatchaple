@@ -1,5 +1,6 @@
 # Mac OS directory store files
 .DS_Store
+.vscode
 
 # Object files
 *.o
