@@ -11,6 +11,8 @@
 
 //Includes
 //#define INCLUDE_LOG_DEBUG 1
+#include "ble_device_type.h"
+#if BUILD_INCLUDES_BLE_CLIENT
 #include "log.h"
 #include "ble.h"
 
@@ -619,4 +621,7 @@ float bitstream_to_float(const uint8_t *ptr_to_byte_array)
 	return temperature;
 } // bitstream_to_float
 
+#endif
+
+#else
 #endif

@@ -5,6 +5,10 @@
  *  @author : Rajat Chaple
  *  @date Created on: Feb 25, 2021
  **********************************************************************************************/
+
+#include "ble_device_type.h"
+#if BUILD_INCLUDES_BLE_CLIENT
+
 #ifndef SRC_BLE_H_
 #define SRC_BLE_H_
 
@@ -91,3 +95,6 @@ bool is_device_found_by_address(bd_addr address_of_discovered_device, bd_addr re
 float bitstream_to_float(const uint8_t *);
 
 #endif /* SRC_BLE_H_ */
+
+#else
+#endif

@@ -8,6 +8,9 @@
 *  Updated by Dave Sluiter Jan 5, 2021.	    updates to loggerGetTimestamp()
  **********************************************************************************************/
 
+#include "ble_device_type.h"
+#if BUILD_INCLUDES_BLE_CLIENT
+
 #include "retargetserial.h"
 #include "log.h"
 #include <stdbool.h>
@@ -67,4 +70,7 @@ void logFlush(void)
 {
 	RETARGET_SerialFlush();
 }
+#endif
+
+#else
 #endif

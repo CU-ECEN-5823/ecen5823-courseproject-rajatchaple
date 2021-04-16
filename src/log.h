@@ -5,6 +5,9 @@
  *      Author: Dan Walkes
  */
 
+#include "ble_device_type.h"
+#if BUILD_INCLUDES_BLE_CLIENT
+
 #ifndef SRC_LOG_H_
 #define SRC_LOG_H_
 #include "stdio.h"
@@ -77,3 +80,6 @@ static inline void logFlush() {}
 
 
 #endif /* SRC_LOG_H_ */
+
+#else
+#endif

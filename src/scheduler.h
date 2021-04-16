@@ -6,6 +6,9 @@
  *  @date Created on: Feb 11, 2021
  **********************************************************************************************/
 
+#include "ble_device_type.h"
+#if BUILD_INCLUDES_BLE_CLIENT
+
 #ifndef SCHEDULER_H
 #define SCHEDULER_H
 
@@ -54,6 +57,10 @@ void scheduler_set_event_I2C_transfer_retry(void);
 uint32_t get_event(void);
 bool event_present(void);
 void state_machine_measure_temperature(struct gecko_cmd_packet* evt);
+void state_machine_proximity_state(struct gecko_cmd_packet* evt);
 void indicate_temperature_over_ble(float);
 
 #endif /* SCHEDULER_H */
+
+#else
+#endif

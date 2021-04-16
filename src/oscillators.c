@@ -6,6 +6,8 @@
  *  @date Created on: Feb 4, 2021
  **********************************************************************************************/
 
+#include "ble_device_type.h"
+#if BUILD_INCLUDES_BLE_CLIENT
 #include "oscillators.h"
 //#define DEBUG
 
@@ -46,3 +48,6 @@ void configure_clock()
 
 
 }// configure_clock()
+
+#else
+#endif

@@ -16,10 +16,12 @@
  *	Updated by Rajat Chaple Mar 13, 2020.	Client functionality added
  **********************************************************************************************/
 
-
+#include "ble_device_type.h"
+#if BUILD_INCLUDES_BLE_CLIENT
 //#define INCLUDE_LOG_DEBUG 1
 #include "log.h"
 #include "main.h"
+#include "sensors_config.h"
 
 
 #if BUILD_INCLUDES_BLE_SERVER
@@ -52,6 +54,7 @@ int appMain(gecko_configuration_t *config)
 
 	//i2c0 configuration for clock and pins
 	i2c_init();
+	proximity_sensor_config();
 
 	//Sleep configuration
 	SLEEP_Init_t sleepConfig = {0};
@@ -131,6 +134,7 @@ int appMain(gecko_configuration_t *config)
 #else
 		//Perform actions based on event occurred
 		handle_ble_event_client(event);
+//		state_machine_measure_temperature(event);
 #endif
 
 
@@ -142,3 +146,6 @@ int appMain(gecko_configuration_t *config)
 
 
 } // appMain()
+
+#else
+#endif

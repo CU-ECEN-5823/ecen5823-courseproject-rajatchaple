@@ -9,6 +9,8 @@
  *  Updated by Rajat Chaple Jan 29, 2021. Changed GPIO Drive strength and added comments
  *  Updated by Rajat Chaple Feb 12, 2020. I2C sensor enable gpio config added
  **********************************************************************************************/
+#include "ble_device_type.h"
+#if BUILD_INCLUDES_BLE_CLIENT
 //#define INCLUDE_LOG_DEBUG 1
 #include "log.h"
 #include "gpio.h"
@@ -122,3 +124,5 @@ void gpioSetDisplayExtcomin(bool value)
 
 }// I2C_sensor_disable()
 
+#else
+#endif

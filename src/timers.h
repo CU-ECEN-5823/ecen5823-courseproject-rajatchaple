@@ -5,6 +5,9 @@
  *  @author : Rajat Chaple
  *  @date Created on: Feb 4, 2021
  **********************************************************************************************/
+#include "ble_device_type.h"
+#if BUILD_INCLUDES_BLE_CLIENT
+
 #ifndef SRC_TIMERS_H_
 #define SRC_TIMERS_H_
 
@@ -24,3 +27,6 @@ void init_LETIMER0();
 void timerWaitUs(uint32_t);
 
 #endif /* SRC_TIMERS_H_ */
+
+#else
+#endif

@@ -11,6 +11,8 @@
  *  										Added Energy Mode and LETIMER duty cycle configuration
  **********************************************************************************************/
 
+#include "ble_device_type.h"
+#if BUILD_INCLUDES_BLE_CLIENT
 
 #ifndef __myMAIN
 #define __myMAIN
@@ -69,3 +71,6 @@ int appMain(gecko_configuration_t *config);
 
 #endif
 
+
+#else
+#endif

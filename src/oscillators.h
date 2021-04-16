@@ -6,6 +6,10 @@
  *  @author : Rajat Chaple
  *  @date Created on: Feb 4, 2021
  **********************************************************************************************/
+
+#include "ble_device_type.h"
+#if BUILD_INCLUDES_BLE_CLIENT
+
 #ifndef SRC_OSCILLATORS_H_
 #define SRC_OSCILLATORS_H_
 
@@ -20,3 +24,6 @@
 void configure_clock(void);
 
 #endif /* SRC_OSCILLATORS_H_ */
+
+#else
+#endif

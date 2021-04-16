@@ -29,6 +29,9 @@
  *
  ******************************************************************************/
 
+//#define INCLUDE_LOG_DEBUG 1
+#include "../../../src/log.h"
+
 #include "em_i2c.h"
 #if defined(I2C_COUNT) && (I2C_COUNT > 0)
 
@@ -536,6 +539,7 @@ I2C_TransferReturn_TypeDef I2C_Transfer(I2C_TypeDef *i2c)
     /* If some sort of fault, abort transfer. */
     if (pending & I2C_IF_ERRORS) {
       if (pending & I2C_IF_ARBLOST) {
+    	  LOG_DEBUG("Some error occurred");
         /* If an arbitration fault, indicates either a slave device */
         /* not responding as expected, or other master which is not */
         /* supported by this software. */
@@ -553,11 +557,13 @@ I2C_TransferReturn_TypeDef I2C_Transfer(I2C_TypeDef *i2c)
       goto done;
     }
 
+    LOG_DEBUG("Read or write flag----------------------%d ", seq->flags);
     switch (transfer->state) {
       /***************************************************/
       /* Send the first start+address (first byte if 10 bit). */
       /***************************************************/
       case i2cStateStartAddrSend:
+    	LOG_DEBUG("in i2cStateStartAddrSend");
         if (seq->flags & I2C_FLAG_10BIT_ADDR) {
           tmp = (((uint32_t)(seq->addr) >> 8) & 0x06) | 0xf0;
 
@@ -581,6 +587,7 @@ I2C_TransferReturn_TypeDef I2C_Transfer(I2C_TypeDef *i2c)
       /* Wait for ACK/NACK on the address (first byte if 10 bit). */
       /*******************************************************/
       case i2cStateAddrWFAckNack:
+    	  LOG_DEBUG("in i2cStateAddrWFAckNack");
         if (pending & I2C_IF_NACK) {
           I2C_IntClear(i2c, I2C_IF_NACK);
           transfer->result = i2cTransferNack;
@@ -612,6 +619,7 @@ I2C_TransferReturn_TypeDef I2C_Transfer(I2C_TypeDef *i2c)
       /* Wait for ACK/NACK on the second byte of a 10 bit address. */
       /******************************************************/
       case i2cStateAddrWF2ndAckNack:
+    	  LOG_DEBUG("in i2cStateAddrWF2ndAckNack");
         if (pending & I2C_IF_NACK) {
           I2C_IntClear(i2c, I2C_IF_NACK);
           transfer->result = i2cTransferNack;
@@ -637,6 +645,7 @@ I2C_TransferReturn_TypeDef I2C_Transfer(I2C_TypeDef *i2c)
       /* Send a repeated start+address */
       /*******************************/
       case i2cStateRStartAddrSend:
+    	  LOG_DEBUG("in i2cStateRStartAddrSend");
         if (seq->flags & I2C_FLAG_10BIT_ADDR) {
           tmp = ((seq->addr >> 8) & 0x06) | 0xf0;
         } else {
@@ -660,6 +669,7 @@ I2C_TransferReturn_TypeDef I2C_Transfer(I2C_TypeDef *i2c)
       /* Wait for ACK/NACK on the repeated start+address (first byte if 10 bit) */
       /**********************************************************************/
       case i2cStateRAddrWFAckNack:
+    	  LOG_DEBUG("in i2cStateRAddrWFAckNack");
         if (pending & I2C_IF_NACK) {
           I2C_IntClear(i2c, I2C_IF_NACK);
           transfer->result = i2cTransferNack;
@@ -682,6 +692,7 @@ I2C_TransferReturn_TypeDef I2C_Transfer(I2C_TypeDef *i2c)
       /* Send a data byte to the slave */
       /*****************************/
       case i2cStateDataSend:
+    	  LOG_DEBUG("in i2cStateDataSend");
         /* Reached end of data buffer. */
         if (transfer->offset >= seq->buf[transfer->bufIndx].len) {
           /* Move to the next message part. */
@@ -714,6 +725,7 @@ I2C_TransferReturn_TypeDef I2C_Transfer(I2C_TypeDef *i2c)
       /* Wait for ACK/NACK from the slave after sending data to it. */
       /*********************************************************/
       case i2cStateDataWFAckNack:
+    	  LOG_DEBUG("in i2cStateDataWFAckNack");
         if (pending & I2C_IF_NACK) {
           I2C_IntClear(i2c, I2C_IF_NACK);
           transfer->result = i2cTransferNack;
@@ -730,6 +742,7 @@ I2C_TransferReturn_TypeDef I2C_Transfer(I2C_TypeDef *i2c)
       /* Wait for data from slave */
       /****************************/
       case i2cStateWFData:
+    	  LOG_DEBUG("in i2cStateWFData");
         if (pending & I2C_IF_RXDATAV) {
           uint8_t       data;
           unsigned int  rxLen = seq->buf[transfer->bufIndx].len;
@@ -776,6 +789,7 @@ I2C_TransferReturn_TypeDef I2C_Transfer(I2C_TypeDef *i2c)
       /* Wait for STOP to have been sent */
       /***********************************/
       case i2cStateWFStopSent:
+    	  LOG_DEBUG("in i2cStateWFStopSent");
         if (pending & I2C_IF_MSTOP) {
           I2C_IntClear(i2c, I2C_IF_MSTOP);
           transfer->state = i2cStateDone;
@@ -786,6 +800,7 @@ I2C_TransferReturn_TypeDef I2C_Transfer(I2C_TypeDef *i2c)
       /* An unexpected state, software fault */
       /******************************/
       default:
+    	  LOG_DEBUG("in default");
         transfer->result = i2cTransferSwFault;
         transfer->state  = i2cStateDone;
         goto done;
@@ -793,6 +808,8 @@ I2C_TransferReturn_TypeDef I2C_Transfer(I2C_TypeDef *i2c)
   }
 
   done:
+
+//  LOG_INFO("------> result : %d", transfer->result);
 
   if (transfer->state == i2cStateDone) {
     /* Disable interrupt sources when done. */
@@ -895,6 +912,7 @@ I2C_TransferReturn_TypeDef I2C_TransferInit(I2C_TypeDef *i2c,
   /* Enable relevant interrupts. */
   /* Notice that the I2C interrupt must also be enabled in the NVIC, but */
   /* that is left for an additional driver wrapper. */
+
   i2c->IEN |= I2C_IEN_NACK | I2C_IEN_ACK | I2C_IEN_MSTOP
               | I2C_IEN_RXDATAV | I2C_IEN_ERRORS;
 

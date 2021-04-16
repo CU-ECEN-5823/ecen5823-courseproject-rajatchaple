@@ -10,6 +10,9 @@
  *  Updated by Rajat Chaple Feb 20, 2020. Added - letimerMilliseconds since startup
  **********************************************************************************************/
 
+#include "ble_device_type.h"
+#if BUILD_INCLUDES_BLE_CLIENT
+
 #include "log.h"
 #include "irq.h"
 
@@ -57,6 +60,8 @@ void I2C0_IRQHandler()
 {
 
 	transfer_status = I2C_Transfer(I2C0);
+//	LOG_INFO("T S %d", transfer_status);
+//	int i = 10000;while(i--);
 	if(transfer_status == i2cTransferDone)
 	{
 		CORE_DECLARE_IRQ_STATE;
@@ -71,7 +76,6 @@ void I2C0_IRQHandler()
 		scheduler_set_event_I2C_transfer_retry();
 		CORE_EXIT_CRITICAL();
 	}
-
 
 } // I2C0_IRQHandler()
 
@@ -151,3 +155,5 @@ uint32_t getSysTicks()
 {
 	return sys_ticks_ms;
 }
+#else
+#endif

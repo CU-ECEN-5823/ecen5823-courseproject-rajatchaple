@@ -6,6 +6,8 @@
  *  @date Created on: Feb 4, 2021
  **********************************************************************************************/
 
+#include "ble_device_type.h"
+#if BUILD_INCLUDES_BLE_CLIENT
 #ifndef SRC_IRQ_H_
 #define SRC_IRQ_H_
 
@@ -22,3 +24,6 @@ uint32_t letimerMilliseconds(void);
 uint32_t getSysTicks(void);
 
 #endif /* SRC_IRQ_H_ */
+
+#else
+#endif

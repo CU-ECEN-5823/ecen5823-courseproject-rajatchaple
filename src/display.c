@@ -14,6 +14,8 @@
  * blue gecko development board for ECEN 5823
  */
 
+#include "ble_device_type.h"
+#if BUILD_INCLUDES_BLE_CLIENT
 //#define INCLUDE_LOG_DEBUG 1
 #include "log.h"
 #include "display.h"
@@ -284,3 +286,6 @@ void displayUpdate()
 } // displayUpdate()
 
 #endif // ECEN5823_INCLUDE_DISPLAY_SUPPORT
+
+#else
+#endif

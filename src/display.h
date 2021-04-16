@@ -31,6 +31,9 @@
  *      would be your initialization code prior to your main while (1) loop,
  */
 
+#include "ble_device_type.h"
+#if BUILD_INCLUDES_BLE_CLIENT
+
 #ifndef SRC_DISPLAY_H_
 #define SRC_DISPLAY_H_
 
@@ -94,3 +97,6 @@ static inline void displayPrintf(enum display_row row, const char *format, ... )
 
 
 #endif /* SRC_DISPLAY_H_ */
+
+#else
+#endif

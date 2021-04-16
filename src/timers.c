@@ -7,6 +7,9 @@
  *
  *  Updated by Rajat Chaple Feb 20, 2020. changed timerWaitUs from olling based to Interrupt based
  **********************************************************************************************/
+
+#include "ble_device_type.h"
+#if BUILD_INCLUDES_BLE_CLIENT
 #include "log.h"
 #include "timers.h"
 
@@ -84,3 +87,5 @@ void timerWaitUs(uint32_t us_wait)
 	LETIMER_IntEnable(LETIMER0, LETIMER_IEN_COMP1);
 
 }
+#else
+#endif

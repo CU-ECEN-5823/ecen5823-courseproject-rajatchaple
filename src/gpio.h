@@ -9,6 +9,8 @@
  *  Updated by Dave Sluiter Dec 31, 2020. Minor edits with #defines.
  *  Updated by Rjajat Chaple Feb 12, 2020. I2C sensor enable gpio config added
 **********************************************************************************************/
+#include "ble_device_type.h"
+#if BUILD_INCLUDES_BLE_CLIENT
 #ifndef SRC_GPIO_H_
 #define SRC_GPIO_H_
 
@@ -46,3 +48,5 @@ void gpioI2CSensorEnSetOn(void);
 void gpioSetDisplayExtcomin(bool state);
 
 #endif /* SRC_GPIO_H_ */
+#else
+#endif

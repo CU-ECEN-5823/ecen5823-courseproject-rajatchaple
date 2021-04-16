@@ -7,6 +7,9 @@
  * @brief A file to help with handling of bluetooth BLE errors from the Blue Gecko
  */
 
+#include "ble_device_type.h"
+#if BUILD_INCLUDES_BLE_CLIENT
+
 #include "gecko_ble_errors.h"
 
 
@@ -61,3 +64,5 @@ const char *bleResponseString(enum bg_error error)
 
 
 
+#else
+#endif

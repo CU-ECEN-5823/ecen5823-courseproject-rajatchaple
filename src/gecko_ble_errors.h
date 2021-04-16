@@ -7,6 +7,8 @@
  * Macros to assist with logging of Blue Gecko BLE errors
  */
 
+#include "ble_device_type.h"
+#if BUILD_INCLUDES_BLE_CLIENT
 #ifndef SRC_GECKO_BLE_ERRORS_H_
 #define SRC_GECKO_BLE_ERRORS_H_
 
@@ -231,3 +233,6 @@ const char *bleResponseString(enum bg_error error);
 
 
 #endif /* SRC_GECKO_BLE_ERRORS_H_ */
+
+#else
+#endif
