@@ -26,4 +26,16 @@ void configure_clock(void);
 #endif /* SRC_OSCILLATORS_H_ */
 
 #else
+
+#ifndef __OSCILLATORS_H__
+#define __OSCILLATORS_H__
+
+
+#include "em_cmu.h"
+
+void init_LFXO_LETIMER0(CMU_ClkDiv_TypeDef div);
+void init_ULFRCO_LETIMER0(CMU_ClkDiv_TypeDef div);
+
+#endif /* __OSCILLATORS_H__ */
+
 #endif

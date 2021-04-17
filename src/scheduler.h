@@ -63,4 +63,91 @@ void indicate_temperature_over_ble(float);
 #endif /* SCHEDULER_H */
 
 #else
+
+#ifndef __SCHEDULER_H__
+#define __SCHEDULER_H__
+
+#include "stdlib.h"
+#include "stdint.h"
+#include "imu.h"
+#include "em_core.h"
+#include "sleep.h"
+#include "native_gecko.h"
+#include "ble_device_type.h"
+#include "ble.h"
+
+// Forward declarations
+extern SLEEP_EnergyMode_t sleep_mode_blocked;
+
+typedef uint8_t runqueue;
+
+extern uint8_t current_state;
+
+typedef enum
+{
+	STATE_ON_IMU,
+	STATE_WAIT_FOR_5_MILLIS,
+	STATE_ACC_STANDBY_SIGNAL_SEND,
+	STATE_ACC_STANDBY_SIGNAL_STOP,
+	STATE_ACC_DATA_CFG_START,
+	STATE_ACC_DATA_CFG_STOP,
+	STATE_ACC_CTRL_REG1_START,
+	STATE_ACC_CTRL_REG1_STOP,
+	STATE_GYRO_STANDBY_SIGNAL_SEND,
+	STATE_GYRO_STANDBY_SIGNAL_STOP,
+	STATE_GYRO_RESET_SIGNAL_SEND,
+	STATE_GYRO_RESET_SIGNAL_NACK, // reset signal gives a NACK.
+	STATE_GYRO_RESET_SIGNAL_STOP,
+	STATE_GYRO_CTRL_REG0_START,
+	STATE_GYRO_CTRL_REG0_STOP,
+	STATE_GYRO_CTRL_REG1_START,
+	STATE_GYRO_CTRL_REG1_STOP,
+	STATE_WAIT_FOR_65_MILLIS,
+	STATE_ACC_MEASURE_START,
+	STATE_ACC_MEASURE_STOP,
+	STATE_GYRO_MEASURE_START,
+	STATE_GYRO_MEASURE_STOP,
+	STATE_SEND_IMU_INDICATION,
+	TRANSFER_STATE_SIZE,
+
+} transfer_states_t;
+
+typedef enum
+{
+
+	FIRST_TIME_PB1_PRESS,
+	READ_CHARACTERISTIC_VALUE,
+	GATT_CONNECTION_CLOSED,
+	GATT_TRANSFER_STATE_SIZE,
+
+} gatt_transfer_states_t;
+
+
+
+uint8_t events_present(void);
+
+runqueue get_event(void);
+void process_event(runqueue func);
+void do_nothing(void);
+
+void scheduler_set_event_UF(void);
+void scheduler_set_event_STATE_WAIT_FOR_5_MILLIS(void);
+void scheduler_set_event_STATE_ACC_STANDBY_SIGNAL_STOP(void);
+void scheduler_set_event_STATE_ACC_DATA_CFG_STOP(void);
+void scheduler_set_event_STATE_ACC_CTRL_REG1_STOP(void);
+void scheduler_set_event_STATE_GYRO_STANDBY_SIGNAL_STOP(void);
+void scheduler_set_event_STATE_GYRO_RESET_SIGNAL_NACK(void);
+void scheduler_set_event_STATE_GYRO_CTRL_REG0_STOP(void);
+void scheduler_set_event_STATE_WAIT_FOR_60_MILLIS(void);
+void scheduler_set_event_STATE_GYRO_CTRL_REG1_STOP(void);
+void scheduler_set_event_STATE_WAIT_FOR_65_MILLIS(void);
+void scheduler_set_event_STATE_ACC_MEASURE_STOP(void);
+void scheduler_set_event_STATE_GYRO_MEASURE_STOP(void);
+void scheduler_set_event_STATE_SEND_IMU_INDICATION(void);
+void state_machine(runqueue func);
+void scheduler_set_event_common(uint32_t f_ptr);
+
+
+
+#endif /* __SCHEDULER_H__*/
 #endif

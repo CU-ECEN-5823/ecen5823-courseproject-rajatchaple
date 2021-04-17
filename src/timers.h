@@ -29,4 +29,25 @@ void timerWaitUs(uint32_t);
 #endif /* SRC_TIMERS_H_ */
 
 #else
+
+#ifndef __TIMERS_H__
+#define __TIMERS_H__
+
+
+#include "gecko_configuration.h"
+#include "native_gecko.h"
+#include "em_letimer.h"
+#include "em_cmu.h"
+#include "stdlib.h"
+#include "sleep.h"
+
+
+// Forward declarations
+void value_to_load(CMU_Osc_TypeDef osc, CMU_ClkDiv_TypeDef div, uint32_t period, uint16_t *value);
+void config_LETIMER0(LETIMER_Init_TypeDef *letimer_init, uint16_t cmp0_value, uint16_t cmp1_value);
+void config_INT_LETIMER0(uint32_t interrupt_flags);
+void timerWaitUs(uint32_t us_wait);
+
+
+#endif /* __TIMERS_H__ */
 #endif

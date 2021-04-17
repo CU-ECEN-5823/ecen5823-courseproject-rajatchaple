@@ -88,4 +88,112 @@ void timerWaitUs(uint32_t us_wait)
 
 }
 #else
+
+#include "timers.h"
+
+
+
+// Helper function to calculate COMPx AND CNT register values.
+void value_to_load(CMU_Osc_TypeDef osc, CMU_ClkDiv_TypeDef div, uint32_t period, uint16_t *value)
+{
+	if (osc == cmuOsc_LFXO)
+	{
+		if (value != NULL)
+		{
+			*value = (period / 1000.0) * (32768 / div);
+
+		}
+
+	}
+	else if (cmuOsc_ULFRCO)
+	{
+		if (value != NULL)
+		{
+			*value = (period / 1000.0) * (1000 / div);
+		}
+
+	}
+
+}
+
+
+void config_LETIMER0(LETIMER_Init_TypeDef *letimer_init, uint16_t cmp0_value, uint16_t cmp1_value)
+{
+
+
+	LETIMER_Init(LETIMER0, letimer_init);
+	LETIMER_CompareSet(LETIMER0, 0, cmp0_value);
+	LETIMER_CompareSet(LETIMER0, 1, cmp1_value);
+
+}
+
+void config_INT_LETIMER0(uint32_t interrupt_flags)
+{
+
+	LETIMER_IntEnable(LETIMER0, interrupt_flags);
+	NVIC_EnableIRQ(LETIMER0_IRQn);
+
+}
+
+// Min=0uS
+// Max=3000000uS
+// Non polling interrupt based.
+// Uses CMP1 interrupts.
+inline void timerWaitUs(uint32_t us_wait)
+{
+	// Range checking
+	// The parameter is unsigned integer.
+	// So lower bound need not be checked.
+	if (us_wait > 3000000)
+	{
+		us_wait = 3000000;
+	}
+
+
+	uint32_t chkpt = 0;
+
+	// Convert microseconds to counter value;
+	// LETIMER0 clock source settings previously done:
+	// EM3 always
+	// osc = cmuOsc_ULFRCO -> Freq = 1000Hz
+	// prescaler div = 1
+	uint32_t us_cnt = (us_wait / 1000000.0) * (1000.0 / 1);
+
+	LETIMER_IntClear(LETIMER0, LETIMER_IFC_COMP1);
+
+
+	// Get LETIMER0 CNT register value here
+	uint32_t cnt_value = LETIMER_CounterGet(LETIMER0);
+
+
+	// Counter roll-over managed here.
+	if (cnt_value < us_cnt)
+	{
+		chkpt = abs(us_cnt - cnt_value); // e.g us_cnt = 3000 and cnt_value = 2000
+
+		chkpt = LETIMER_CompareGet(LETIMER0, 0) - chkpt;
+	}
+	else if (cnt_value > us_cnt)
+	{
+		chkpt = cnt_value - us_cnt;
+	}
+	if (cnt_value < us_cnt)
+	{
+		chkpt = 0;
+	}
+
+
+
+	// Set COMP1 register value
+	// Enable CMP1 interrupt.
+	LETIMER_CompareSet(LETIMER0, 1, chkpt);
+	// IMPORTANT step. Clear the COMP1 flag in IF register before enabling the COMP1 interrupt
+	LETIMER_IntClear(LETIMER0, LETIMER_IFC_COMP1);
+	LETIMER_IntEnable(LETIMER0, LETIMER_IF_COMP1);
+
+
+}
+
+
+
 #endif

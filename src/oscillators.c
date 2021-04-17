@@ -50,4 +50,59 @@ void configure_clock()
 }// configure_clock()
 
 #else
+
+#include "oscillators.h"
+
+
+void init_LFXO_LETIMER0(CMU_ClkDiv_TypeDef div)
+{
+
+	// Enable the LFXO oscillator
+	CMU_OscillatorEnable(cmuOsc_LFXO, true, true);
+
+	// Set the clock branch
+	CMU_ClockSelectSet(cmuClock_LFA, cmuSelect_LFXO);
+
+	/**
+	 * Set the prescaler
+	 * LFXO OSC - 32768Hz
+	 * Prescaler - 4
+	 * LETIMER0 CLK SRC = 32768 / 4 = 8192Hz
+	 * This is the optimal setting to produce 7s of blink period using 16 bit down counter of LETIMER0
+	 * Compare registers are also 16bit size.
+	 */
+	CMU_ClockDivSet(cmuClock_LETIMER0 , div);
+
+	// Enable the clock - LFACLK for the peripheral - LETIMER0
+	CMU_ClockEnable(cmuClock_LETIMER0, 1);
+
+
+
+}
+
+void init_ULFRCO_LETIMER0(CMU_ClkDiv_TypeDef div)
+{
+
+	// Enable the ULFRCO oscillator
+	CMU_OscillatorEnable(cmuOsc_ULFRCO, true, true);
+
+	// Set the clock branch
+	CMU_ClockSelectSet(cmuClock_LFA, cmuSelect_ULFRCO);
+
+	/**
+	 * Set the prescaler
+	 * ULFRCO OSC - 1000Hz
+	 * Prescaler - 1 (no prescaling needed)
+	 * LETIMER0 CLK SRC = 1000 / 1 = 1000Hz
+	 * This is the optimal setting to produce 7s of blink period using 16 bit down counter of LETIMER0
+	 * Compare registers are also 16bit size.
+	 */
+	CMU_ClockDivSet(cmuClock_LETIMER0 , div);
+
+	// Enable the clock - LFACLK for the peripheral - LETIMER0
+	CMU_ClockEnable(cmuClock_LETIMER0, 1);
+
+}
+
+
 #endif

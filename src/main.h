@@ -73,4 +73,40 @@ int appMain(gecko_configuration_t *config);
 
 
 #else
+
+#ifndef __myMAIN
+#define __myMAIN
+
+
+#include "gecko_configuration.h"
+#include "native_gecko.h"
+
+#include "oscillators.h"
+#include "timers.h"
+#include "irq.h"
+#include "sleep.h"
+#include "log.h"
+#include "scheduler.h"
+#include "imu.h"
+#include "ble.h"
+#include "ble_device_type.h"
+
+// MACROS definitions here
+// BLE works in EM2
+#define LOWEST_ENERGY_MODE sleepEM1
+#define ENABLE_SLEEPING 1
+
+
+#define LETIMER_PERIOD_MS 3000 // 3s
+
+
+
+// function prototypes
+int appMain(gecko_configuration_t *config);
+
+
+
+#endif
+
+
 #endif

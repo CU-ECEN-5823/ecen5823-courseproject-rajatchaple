@@ -97,4 +97,55 @@ float bitstream_to_float(const uint8_t *);
 #endif /* SRC_BLE_H_ */
 
 #else
+
+#ifndef __BLE_H__
+#define __BLE_H__
+
+// connection parameters
+#define CONN_INTERVAL_MIN             80   //100ms
+#define CONN_INTERVAL_MAX             80   //100ms
+#define CONN_SLAVE_LATENCY            0    //no latency
+#define CONN_TIMEOUT                  100  //1000ms
+
+#define CONNECTION_HANDLE_INVALID     (uint8_t)0xFFu
+#define SERVICE_HANDLE_INVALID        (uint32_t)0xFFFFFFFFu
+#define CHARACTERISTIC_HANDLE_INVALID (uint16_t)0xFFFFu
+
+// AS8
+#define IO_CAPABILITY  				  1 // 1=DISPLAYYESNO
+#define SM_CONFIG_FLAGS 			  (0x09) // MITM protection and bonding should be confirmed
+
+#include "native_gecko.h"
+#include "scheduler.h"
+#include "gatt_db.h"
+#include "bg_types.h"
+#include "native_gecko.h"
+#include "infrastructure.h"
+#include "em_core.h"
+#include "display.h"
+#include "ble_device_type.h"
+#include "gpio.h"
+#include "imu.h"
+
+extern uint8_t connected_status_flag;
+extern uint8_t conn_handle;
+extern uint32_t service_handle;
+extern uint16_t characteristic_handle;
+extern uint8_t characteristic_properties;
+extern uint8_t characterstic_flag;
+
+// 	ECEN5823 Encryption test service
+extern const uint8_t ecen5823_encryption_test_service_UUID[16];
+
+// ECEN5823 Encrypted button state characteristic
+extern const uint8_t ecen5823_encryption_button_state_UUID[16];
+
+
+
+
+void handle_ble_event(struct gecko_cmd_packet *evt);
+
+
+#endif /* __BLE_H__ */
+
 #endif

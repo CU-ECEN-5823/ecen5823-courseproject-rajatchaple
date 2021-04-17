@@ -26,4 +26,21 @@ uint32_t getSysTicks(void);
 #endif /* SRC_IRQ_H_ */
 
 #else
+
+
+#ifndef __IRQ_H__
+#define __IRQ_H__
+
+
+#include "em_letimer.h"
+#include "scheduler.h"
+#include "log.h" // Only used to increment millis_count. No calls to LOG() inside ISR.
+#include "ble.h"
+#include "gpio.h"
+
+
+
+#endif /* __IRQ_H__ */
+
+
 #endif

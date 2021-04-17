@@ -17,11 +17,11 @@
 #include "scheduler.h"
 
 static uint32_t event_status  = 0x00000000;
-extern ble_status_t ble_status;
+// extern ble_status_t ble_status;
 
 float temperature = 0;
 char temperature_str[13];
-extern uint8_t read_data[2];
+// extern uint8_t read_data[2];
 
 
 
@@ -391,4 +391,398 @@ bool event_present()
 
 
 #else
+
+#include "scheduler.h"
+
+
+
+runqueue rq_array[30];
+uint8_t rq_ind = 0;
+uint8_t read = 0;
+uint8_t current_state;
+runqueue tmp = 0;
+
+uint8_t events_present(void)
+{
+	if (read == rq_ind)
+	{
+		return 0;
+	}
+	else
+	{
+		return 1;
+	}
+
+}
+
+void scheduler_set_event_UF(void)
+{
+	CORE_DECLARE_IRQ_STATE;
+	CORE_ENTER_CRITICAL();
+
+	// critical section
+
+	gecko_external_signal(10);
+
+	CORE_EXIT_CRITICAL();
+
+}
+
+
+
+void scheduler_set_event_STATE_WAIT_FOR_5_MILLIS(void)
+{
+
+	CORE_DECLARE_IRQ_STATE;
+	CORE_ENTER_CRITICAL();
+
+	// critical section
+
+	gecko_external_signal(20);
+
+	CORE_EXIT_CRITICAL();
+
+}
+
+
+void scheduler_set_event_STATE_ACC_STANDBY_SIGNAL_STOP(void)
+{
+
+	CORE_DECLARE_IRQ_STATE;
+	CORE_ENTER_CRITICAL();
+
+	// critical section
+
+	gecko_external_signal(30);
+
+	CORE_EXIT_CRITICAL();
+
+}
+
+
+void scheduler_set_event_STATE_ACC_DATA_CFG_STOP(void)
+{
+	CORE_DECLARE_IRQ_STATE;
+	CORE_ENTER_CRITICAL();
+
+	// critical section
+
+	gecko_external_signal(40);
+
+	CORE_EXIT_CRITICAL();
+
+}
+
+
+void scheduler_set_event_STATE_ACC_CTRL_REG1_STOP(void)
+{
+
+	CORE_DECLARE_IRQ_STATE;
+	CORE_ENTER_CRITICAL();
+
+	// critical section
+
+	gecko_external_signal(50);
+
+	CORE_EXIT_CRITICAL();
+
+}
+
+void scheduler_set_event_STATE_GYRO_STANDBY_SIGNAL_STOP(void)
+{
+
+	CORE_DECLARE_IRQ_STATE;
+	CORE_ENTER_CRITICAL();
+
+	// critical section
+
+	gecko_external_signal(60);
+
+	CORE_EXIT_CRITICAL();
+
+}
+
+void scheduler_set_event_STATE_GYRO_RESET_SIGNAL_NACK(void)
+{
+
+	CORE_DECLARE_IRQ_STATE;
+	CORE_ENTER_CRITICAL();
+
+	// critical section
+
+	gecko_external_signal(70);
+
+	CORE_EXIT_CRITICAL();
+
+
+}
+
+void scheduler_set_event_STATE_GYRO_CTRL_REG0_STOP(void)
+{
+
+	CORE_DECLARE_IRQ_STATE;
+	CORE_ENTER_CRITICAL();
+
+	// critical section
+
+	gecko_external_signal(80);
+
+	CORE_EXIT_CRITICAL();
+
+}
+
+void scheduler_set_event_STATE_GYRO_CTRL_REG1_STOP(void)
+{
+
+	CORE_DECLARE_IRQ_STATE;
+	CORE_ENTER_CRITICAL();
+
+	// critical section
+
+	gecko_external_signal(90);
+
+	CORE_EXIT_CRITICAL();
+
+
+}
+
+
+
+
+void scheduler_set_event_STATE_WAIT_FOR_65_MILLIS(void)
+{
+	CORE_DECLARE_IRQ_STATE;
+	CORE_ENTER_CRITICAL();
+
+	// critical section
+
+	gecko_external_signal(100);
+
+	CORE_EXIT_CRITICAL();
+
+}
+
+
+
+
+void scheduler_set_event_STATE_ACC_MEASURE_STOP(void)
+{
+	CORE_DECLARE_IRQ_STATE;
+	CORE_ENTER_CRITICAL();
+
+	// critical section
+
+	gecko_external_signal(110);
+
+	CORE_EXIT_CRITICAL();
+
+}
+
+
+void scheduler_set_event_STATE_GYRO_MEASURE_STOP(void)
+{
+
+	CORE_DECLARE_IRQ_STATE;
+	CORE_ENTER_CRITICAL();
+
+	// critical section
+
+	gecko_external_signal(120);
+
+	CORE_EXIT_CRITICAL();
+
+}
+
+
+void scheduler_set_event_STATE_SEND_IMU_INDICATION(void)
+{
+
+	CORE_DECLARE_IRQ_STATE;
+	CORE_ENTER_CRITICAL();
+
+	// critical section
+
+	gecko_external_signal(130);
+
+	CORE_EXIT_CRITICAL();
+
+}
+
+
+void scheduler_set_event_common(uint32_t signal)
+{
+	CORE_DECLARE_IRQ_STATE;
+	CORE_ENTER_CRITICAL();
+
+	// critical section
+
+	if (((rq_ind + 1) % 30) != read)
+	{
+		rq_ind = (rq_ind + 1) % 30;
+		rq_array[rq_ind] = (runqueue)signal; // starts from index=0
+	}
+
+
+	CORE_EXIT_CRITICAL();
+
+}
+
+
+
+runqueue get_event(void)
+{
+	CORE_DECLARE_IRQ_STATE;
+	CORE_ENTER_CRITICAL();
+
+	// critical section
+	if (read == rq_ind) // runqueue empty condition
+	{
+		CORE_EXIT_CRITICAL();
+		return 0;
+	}
+	read = (read + 1) % 30; // reads from index=0
+	tmp = rq_array[read];
+	rq_array[read] = 0;
+
+	CORE_EXIT_CRITICAL();
+
+	return tmp;
+
+
+}
+
+// state machine
+void state_machine(runqueue func)
+{
+
+
+
+	static uint8_t next_state  = STATE_ON_IMU;
+	current_state = next_state;
+
+	switch (current_state)
+	{
+
+
+		case STATE_ON_IMU:
+			if (func == 10)
+			{
+				turn_on_IMU();
+				next_state = STATE_WAIT_FOR_5_MILLIS;
+			}
+			break;
+
+		case STATE_WAIT_FOR_5_MILLIS:
+			if (func == 20)
+			{
+
+				FXOS_send_standby_signal();
+				next_state = STATE_ACC_DATA_CFG_START;
+			}
+			break;
+
+		case STATE_ACC_DATA_CFG_START:
+			if (func == 30)
+			{
+
+				FXOS_DATA_CFG_start();
+				next_state = STATE_ACC_CTRL_REG1_START;
+			}
+			break;
+
+		case STATE_ACC_CTRL_REG1_START:
+			if (func == 40)
+			{
+
+				FXOS_CTRL_REG1_signal_start();
+				next_state = STATE_GYRO_STANDBY_SIGNAL_SEND;
+			}
+			break;
+
+		case STATE_GYRO_STANDBY_SIGNAL_SEND:
+			if (func == 50)
+			{
+
+				FXAS_standby_signal_send();
+				next_state = STATE_GYRO_RESET_SIGNAL_SEND;
+			}
+			break;
+
+		case STATE_GYRO_RESET_SIGNAL_SEND:
+			if (func == 60)
+			{
+
+				FXAS_reset_signal_send();
+				next_state = STATE_GYRO_CTRL_REG0_START;
+			}
+			break;
+
+		case STATE_GYRO_CTRL_REG0_START:
+			if (func == 70)
+			{
+
+				FXAS_CTRL_REG0_signal_start();
+
+				next_state = STATE_GYRO_CTRL_REG1_START;
+			}
+			break;
+
+
+
+		case STATE_GYRO_CTRL_REG1_START:
+			if (func == 80)
+			{
+
+
+				FXAS_CTRL_REG1_signal_start();
+				next_state = STATE_WAIT_FOR_65_MILLIS;
+			}
+			break;
+
+		// 60 ms + 1/ODR is needed for transition from standby to active mode
+		case STATE_WAIT_FOR_65_MILLIS:
+			if (func == 90)
+			{
+
+
+				wait_for_65_millis();
+
+				next_state = STATE_ACC_MEASURE_START;
+			}
+			break;
+
+		case STATE_ACC_MEASURE_START:
+			if (func == 100)
+			{
+
+				FXOS_measure_start();
+				next_state = STATE_GYRO_MEASURE_START;
+			}
+			break;
+
+
+		case STATE_GYRO_MEASURE_START:
+			if (func == 110)
+			{
+
+				FXAS_measure_start();
+				next_state = STATE_GYRO_MEASURE_STOP;
+			}
+			break;
+
+
+		case STATE_GYRO_MEASURE_STOP:
+			if (func == 120)
+			{
+
+				FXAS_measure_stop_off_read();
+
+				next_state = STATE_ON_IMU;
+			}
+			break;
+
+	}
+
+}
+
 #endif

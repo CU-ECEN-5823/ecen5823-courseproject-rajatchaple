@@ -49,4 +49,70 @@ void gpioSetDisplayExtcomin(bool state);
 
 #endif /* SRC_GPIO_H_ */
 #else
+
+#ifndef SRC_GPIO_H_
+#define SRC_GPIO_H_
+#include <stdbool.h>
+#include "em_gpio.h"
+#include <string.h>
+#include <stdbool.h>
+#include "em_core.h"
+#include "native_gecko.h"
+
+// Student TODO: define these, 0's are placeholder values.
+// See the radio board user guide at https://www.silabs.com/documents/login/user-guides/ug279-brd4104a-user-guide.pdf
+// and GPIO documentation at https://siliconlabs.github.io/Gecko_SDK_Doc/efm32g/html/group__GPIO.html
+// to determine the correct values for these.
+
+#define	LED0_port  gpioPortF // change to correct ports and pins
+#define LED0_pin   4
+#define LED1_port  gpioPortF
+#define LED1_pin   5
+
+#define SENSOR_EN_port  gpioPortD
+#define SENSOR_EN_pin   15
+
+#define DISP_EXTCOMIN_port  gpioPortD
+#define DISP_EXTCOMIN_pin   13
+
+#define I2C0_SCL_port  gpioPortC
+#define I2C0_SDA_port  gpioPortC
+#define I2C0_SCL_pin   10
+#define I2C0_SDA_pin   11
+
+// Server security - MITM
+#define PB0_port  gpioPortF
+#define PB0_pin   6
+#define PB1_port  gpioPortF
+#define PB1_pin   7
+
+#define IMU_EN_port  gpioPortD
+#define IMU_EN_pin   12
+
+
+#define GPIO_SET_DISPLAY_EXT_COMIN_IMPLEMENTED 	1
+
+#define GPIO_DISPLAY_SUPPORT_IMPLEMENTED		1
+
+
+extern uint8_t button_value;
+
+void gpioInit();
+void gpioLed0SetOn();
+void gpioLed0SetOff();
+void gpioLed1SetOn();
+void gpioLed1SetOff();
+void gpioI2CSensorEnSetOn();
+void gpioI2CSensorEnSetOff();
+void gpioSetDisplayExtcomin(bool);
+
+void gpio_set_event_PB0_press();
+void gpio_set_event_PB0_release();
+void gpio_set_event_PB1_press();
+
+void gpioIMUSensorEnSetOn();
+void gpioIMUSensorEnSetOff();
+
+#endif /* SRC_GPIO_H_ */
+
 #endif
