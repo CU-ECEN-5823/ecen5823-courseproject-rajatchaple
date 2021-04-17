@@ -48,10 +48,7 @@
 // Select antenna path on EFR32xG2x devices:
 //   - RF2G2_IO1: 0
 //   - RF2G2_IO2: 1
-#define APP_RF_ANTENNA   1
-#define APP_RF_CONFIG_ANTENNA   0
-#define GECKO_RF_ANTENNA        APP_RF_ANTENNA
-
+#define GECKO_RF_ANTENNA   1
 #if defined(FEATURE_EXP_HEADER_USART3)
 
 #define BSP_EXP_USART           USART3

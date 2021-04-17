@@ -1,9 +1,6 @@
 /**
  * HAL configuration settings to support ECEN 5823 application setup
  */
-
-#include "ble_device_type.h"
-#if BUILD_INCLUDES_BLE_CLIENT
 #define HAL_SPIDISPLAY_ENABLE                         (1)
 #define HAL_SPIDISPLAY_EXTCOMIN_CALLBACK
 #if defined(FEATURE_IOEXPANDER)
@@ -15,6 +12,3 @@
 #define HAL_SPIDISPLAY_EXTCOMIN_USE_PRS               (0)
 #define HAL_SPIDISPLAY_EXTCOMIN_USE_CALLBACK          (0)
 #define HAL_SPIDISPLAY_FREQUENCY                      (1000000)
-
-#else
-#endif
