@@ -121,7 +121,7 @@ int appMain(gecko_configuration_t *config)
 #include "main.h"
 
 // Sleep setting - 1
-SLEEP_EnergyMode_t sleep_mode_blocked = sleepEM2;
+SLEEP_EnergyMode_t sleep_mode_blocked = SLEEP_MODE_BLOCKED;
 runqueue evt;
 struct gecko_cmd_packet *bl_evt;
 

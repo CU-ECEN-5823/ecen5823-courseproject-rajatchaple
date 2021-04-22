@@ -75,6 +75,7 @@ void indicate_temperature_over_ble(float);
 #include "native_gecko.h"
 #include "ble_device_type.h"
 #include "ble.h"
+#include "main.h"
 
 // Forward declarations
 extern SLEEP_EnergyMode_t sleep_mode_blocked;
@@ -86,7 +87,6 @@ extern uint8_t current_state;
 typedef enum
 {
 	STATE_ON_IMU,
-	STATE_WAIT_FOR_5_MILLIS,
 	STATE_ACC_STANDBY_SIGNAL_SEND,
 	STATE_ACC_STANDBY_SIGNAL_STOP,
 	STATE_ACC_DATA_CFG_START,
@@ -131,7 +131,7 @@ void process_event(runqueue func);
 void do_nothing(void);
 
 void scheduler_set_event_UF(void);
-void scheduler_set_event_STATE_WAIT_FOR_5_MILLIS(void);
+void scheduler_set_event_STATE_ACC_STANDBY_SIGNAL_SEND(void);
 void scheduler_set_event_STATE_ACC_STANDBY_SIGNAL_STOP(void);
 void scheduler_set_event_STATE_ACC_DATA_CFG_STOP(void);
 void scheduler_set_event_STATE_ACC_CTRL_REG1_STOP(void);

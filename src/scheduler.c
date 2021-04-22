@@ -430,7 +430,7 @@ void scheduler_set_event_UF(void)
 
 
 
-void scheduler_set_event_STATE_WAIT_FOR_5_MILLIS(void)
+void scheduler_set_event_STATE_ACC_STANDBY_SIGNAL_SEND(void)
 {
 
 	CORE_DECLARE_IRQ_STATE;
@@ -667,12 +667,17 @@ void state_machine(runqueue func)
 		case STATE_ON_IMU:
 			if (func == 10)
 			{
+
+				SLEEP_SleepBlockEnd(sleep_mode_blocked);
+				SLEEP_SleepBlockBegin(sleepEM2);
+
+
 				turn_on_IMU();
-				next_state = STATE_WAIT_FOR_5_MILLIS;
+				next_state = STATE_ACC_STANDBY_SIGNAL_SEND;
 			}
 			break;
 
-		case STATE_WAIT_FOR_5_MILLIS:
+		case STATE_ACC_STANDBY_SIGNAL_SEND:
 			if (func == 20)
 			{
 
@@ -722,7 +727,7 @@ void state_machine(runqueue func)
 			{
 
 				FXAS_CTRL_REG0_signal_start();
-
+				for (int i = 0; i < 50000; i++);
 				next_state = STATE_GYRO_CTRL_REG1_START;
 			}
 			break;
@@ -775,6 +780,14 @@ void state_machine(runqueue func)
 			if (func == 120)
 			{
 
+				#if BOND_DISCONNECT
+
+				#else
+
+					SLEEP_SleepBlockEnd(sleepEM2);
+					SLEEP_SleepBlockBegin(sleep_mode_blocked);
+
+				#endif
 				FXAS_measure_stop_off_read();
 
 				next_state = STATE_ON_IMU;

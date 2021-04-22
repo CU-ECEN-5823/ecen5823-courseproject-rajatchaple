@@ -175,14 +175,29 @@ void LETIMER0_IRQHandler(void)
 		// Interrupt handler logic here
 
 		#if INCLUDE_LOGGING
-			CORE_DECLARE_IRQ_STATE;
-			CORE_ENTER_CRITICAL();
+			#if BOND_DISCONNECT
 
-			// Increment millis_cnt here. Timestamp is based on UF interrupt (3000ms) + current counter value.
-			// Calculation taken from lecture slides.
-			millis_cnt = millis_cnt + 3000 + (3000 - LETIMER_CounterGet(LETIMER0));
+				CORE_DECLARE_IRQ_STATE;
+				CORE_ENTER_CRITICAL();
 
-			CORE_EXIT_CRITICAL();
+				// Increment millis_cnt here. Timestamp is based on UF interrupt (10000ms) + current counter value.
+				// Calculation taken from lecture slides.
+				millis_cnt = millis_cnt + 10000 + (10000 - LETIMER_CounterGet(LETIMER0));
+
+				CORE_EXIT_CRITICAL();
+
+			#else
+
+				CORE_DECLARE_IRQ_STATE;
+				CORE_ENTER_CRITICAL();
+
+				// Increment millis_cnt here. Timestamp is based on UF interrupt (3000ms) + current counter value.
+				// Calculation taken from lecture slides.
+				millis_cnt = millis_cnt + 3000 + (3000 - LETIMER_CounterGet(LETIMER0));
+
+				CORE_EXIT_CRITICAL();
+
+			#endif
 		#endif
 
 
@@ -208,11 +223,11 @@ void LETIMER0_IRQHandler(void)
 		LETIMER_IntDisable(LETIMER0, LETIMER_IF_COMP1);
 
 
-		if (state == STATE_WAIT_FOR_5_MILLIS)
+		if (state == STATE_ACC_STANDBY_SIGNAL_SEND)
 		{
+
 			state++;
-			state++;
-			scheduler_set_event_STATE_WAIT_FOR_5_MILLIS();
+			scheduler_set_event_STATE_ACC_STANDBY_SIGNAL_SEND();
 			return;
 		}
 

@@ -372,21 +372,6 @@ float bitstream_to_float(const uint8_t *ptr_to_byte_array)
 uint32_t signal;
 uint8_t conn_handle;
 gatt_transfer_states_t gatt_state = 0;
-// Health Thermometer service UUID defined by the SIG group
-const uint8_t thermoService[2] = { 0x09, 0x18 };
-// Temperature Measurement characteristic UUID defined by the SIG group
-const uint8_t thermoChar[2] = { 0x1c, 0x2a };
-
-// 	ECEN5823 Encryption test service
-const uint8_t ecen5823_encryption_test_service_UUID[16] = {0x89, 0x62, 0x13, 0x2d, 0x2a, 0x65, 0xec, 0x87, 0x3e, 0x43, 0xc8, 0x38, 0x01, 0x00, 0x00, 0x00};
-
-// ECEN5823 Encrypted button state characteristic
-const uint8_t ecen5823_encryption_button_state_UUID[16] = {0x89, 0x62, 0x13, 0x2d, 0x2a, 0x65, 0xec, 0x87, 0x3e, 0x43, 0xc8, 0x38, 0x02, 0x00, 0x00, 0x00};
-
-uint8_t* charValue;
-int32_t temperature;
-
-uint8_t button_value_read = 2; // Some invalid value other than 0 or 1.
 
 // Service handle
 uint32_t service_handle;
@@ -419,7 +404,7 @@ uint8_t bonded = 0;
 struct gecko_msg_system_get_bt_address_rsp_t* server_bt_addr;
 struct gecko_msg_system_get_bt_address_rsp_t* client_bt_addr;
 
-
+uint8_t done = 0;
 
 void handle_ble_event(struct gecko_cmd_packet *evt)
 {
@@ -463,19 +448,12 @@ void handle_ble_event(struct gecko_cmd_packet *evt)
 				#endif
 			}
 
-			//Configure security manager here
-			struct gecko_msg_sm_configure_rsp_t *ret8 = gecko_cmd_sm_configure(SM_CONFIG_FLAGS, IO_CAPABILITY);
-			if (ret8->result != 0)
-			{
-				#if INCLUDE_LOGGING
-					LOG_ERROR("ERROR: %d | response code from gecko_cmd_sm_configure()", ret8->result);
-				#endif
-			}
+
 
 
 			// Display to LCD
 			displayPrintf(DISPLAY_ROW_CONNECTION, "Advertising");
-			displayPrintf(DISPLAY_ROW_TEMPVALUE, " ");
+
 
 		}
 			break;
@@ -499,6 +477,18 @@ void handle_ble_event(struct gecko_cmd_packet *evt)
 					LOG_ERROR("ERROR: %d | response code from gecko_cmd_le_connection_set_parameters()", ret3->result);
 				#endif
 			}
+
+
+			//Configure security manager here
+			struct gecko_msg_sm_configure_rsp_t *ret8 = gecko_cmd_sm_configure(SM_CONFIG_FLAGS, IO_CAPABILITY);
+			if (ret8->result != 0)
+			{
+				#if INCLUDE_LOGGING
+					LOG_ERROR("ERROR: %d | response code from gecko_cmd_sm_configure()", ret8->result);
+				#endif
+			}
+
+
 		}
 			break;
 
@@ -520,8 +510,8 @@ void handle_ble_event(struct gecko_cmd_packet *evt)
 
 				UINT16_TO_BITSTREAM(ptr, (uint16_t)accel_data.y);
 				uint8_t f_buffer[3];
-				f_buffer[2] = t_buffer[1];
-				f_buffer[1] = t_buffer[2];
+				f_buffer[2] = t_buffer[2];
+				f_buffer[1] = t_buffer[1];
 				f_buffer[0] = t_buffer[0];
 
 				struct gecko_msg_gatt_server_send_characteristic_notification_rsp_t *ret21 = gecko_cmd_gatt_server_send_characteristic_notification(conn_handle,
@@ -626,7 +616,7 @@ void handle_ble_event(struct gecko_cmd_packet *evt)
 			// Send indications to client.
 			// Need for reference. Don't remove this comment.
 			// if (calibration_complete_flag==2 && axis_orientation_indication_en_flag && (signal == 130))
-			if (calibration_complete_flag == 1 && axis_orientation_indication_en_flag && (signal == 130))
+			if (bonded == 2 && calibration_complete_flag == 1 && axis_orientation_indication_en_flag && (signal == 130))
 			{
 
 				if (remote_gatt_cmd_in_progress == 0)
@@ -639,14 +629,15 @@ void handle_ble_event(struct gecko_cmd_packet *evt)
 
 					UINT16_TO_BITSTREAM(ptr, (uint16_t)accel_data.y);
 					uint8_t f_buffer[3];
-					f_buffer[2] = t_buffer[1];
-					f_buffer[1] = t_buffer[2];
+					f_buffer[2] = t_buffer[2];
+					f_buffer[1] = t_buffer[1];
 					f_buffer[0] = t_buffer[0];
 
 					struct gecko_msg_gatt_server_send_characteristic_notification_rsp_t *ret19 = gecko_cmd_gatt_server_send_characteristic_notification(conn_handle,
 							gattdb_y_axis_value, 3, f_buffer);
 
 					remote_gatt_cmd_in_progress = 1;
+					done = 1;
 
 					if (first_time_tut_send_flag == 0)
 					{
@@ -678,9 +669,11 @@ void handle_ble_event(struct gecko_cmd_packet *evt)
 			}
 
 			// PB0 press
-			if (time_until_trigger_indication_en_flag && signal == 200)
+			if (bonded == 2 && time_until_trigger_indication_en_flag && signal == 200)
 			{
 				current_tut_index = (current_tut_index + 1 ) % tut_options_max;
+
+				displayPrintf(DISPLAY_ROW_TUT, "TUT: %us", time_until_trigger[current_tut_index]);
 
 				if (remote_gatt_cmd_in_progress == 0)
 				{
@@ -772,6 +765,27 @@ void handle_ble_event(struct gecko_cmd_packet *evt)
 
 			}
 
+			#if BOND_DISCONNECT
+				// rssi is set for the next transmission.
+				// Enable to sleep in EM3 mode here i.e., sleep_mode_blocked = sleepEM4
+				if (calibration_complete_flag == 1 && done == 1 && indication_gatt_cmd_defer_flag == 0)
+				{
+					done = 0;
+					struct gecko_msg_le_connection_close_rsp_t *ret23 = gecko_cmd_le_connection_close(conn_handle);
+					if (ret23->result != 0)
+					{
+
+						#if INCLUDE_LOGGING
+							LOG_ERROR("ERROR: %d | response code from gecko_cmd_le_connection_close()", ret23->result);
+						#endif
+					}
+
+
+					SLEEP_SleepBlockEnd(sleepEM2);
+					SLEEP_SleepBlockBegin(sleep_mode_blocked);
+				}
+
+			#endif
 
 		}
 			break;
@@ -807,9 +821,8 @@ void handle_ble_event(struct gecko_cmd_packet *evt)
 
 			// Display to LCD
 			displayPrintf(DISPLAY_ROW_CONNECTION, "Advertising");
-			displayPrintf(DISPLAY_ROW_TEMPVALUE, " ");
-			displayPrintf(DISPLAY_ROW_PASSKEY, " ");
-			displayPrintf(DISPLAY_ROW_ACTION, " ");
+
+
 
 			break;
 
@@ -872,16 +885,6 @@ void handle_ble_event(struct gecko_cmd_packet *evt)
 		}
 			break;
 
-	  case gecko_evt_sm_confirm_passkey_id:
-
-		// passkey exchanged by the phone.
-		passkey = evt->data.evt_sm_confirm_passkey.passkey;
-		// display passkey and yes or no question here.
-		displayPrintf(DISPLAY_ROW_PASSKEY, "Passkey %u", passkey);
-		displayPrintf(DISPLAY_ROW_ACTION, "Confirm with PB0");
-
-		break;
-
 
 	  case gecko_evt_sm_bonded_id:
 
@@ -889,7 +892,7 @@ void handle_ble_event(struct gecko_cmd_packet *evt)
 		bonded = 2;
 
 		displayPrintf(DISPLAY_ROW_PASSKEY, " ");
-		displayPrintf(DISPLAY_ROW_ACTION, " ");
+		displayPrintf(DISPLAY_ROW_TUT, "TUT: %us", time_until_trigger[current_tut_index]);
 		displayPrintf(DISPLAY_ROW_CONNECTION, "Bonded");
 
 
@@ -898,6 +901,7 @@ void handle_ble_event(struct gecko_cmd_packet *evt)
 
 	  case gecko_evt_sm_bonding_failed_id:
 	  {
+
 
 		struct gecko_msg_le_connection_close_rsp_t *ret18 = gecko_cmd_le_connection_close(conn_handle);
 		if (ret18->result != 0)

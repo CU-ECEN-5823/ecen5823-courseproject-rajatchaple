@@ -111,9 +111,11 @@ float bitstream_to_float(const uint8_t *);
 #define SERVICE_HANDLE_INVALID        (uint32_t)0xFFFFFFFFu
 #define CHARACTERISTIC_HANDLE_INVALID (uint16_t)0xFFFFu
 
-// AS8
-#define IO_CAPABILITY  				  1 // 1=DISPLAYYESNO
-#define SM_CONFIG_FLAGS 			  (0x09) // MITM protection and bonding should be confirmed
+
+#define IO_CAPABILITY  				   0 // 0=DISPLAYONLY
+#define SM_CONFIG_FLAGS 			  (0x0A) // encrypted link and bonding should be confirmed
+//#define IO_CAPABILITY  				   1 // 0=DISPLAYYESNO
+//#define SM_CONFIG_FLAGS 			  (0x09) // MITM protection, bonding should be confirmed
 
 #include "native_gecko.h"
 #include "scheduler.h"
@@ -126,6 +128,7 @@ float bitstream_to_float(const uint8_t *);
 #include "ble_device_type.h"
 #include "gpio.h"
 #include "imu.h"
+#include "main.h"
 
 extern uint8_t connected_status_flag;
 extern uint8_t conn_handle;
@@ -139,8 +142,6 @@ extern const uint8_t ecen5823_encryption_test_service_UUID[16];
 
 // ECEN5823 Encrypted button state characteristic
 extern const uint8_t ecen5823_encryption_button_state_UUID[16];
-
-
 
 
 void handle_ble_event(struct gecko_cmd_packet *evt);
