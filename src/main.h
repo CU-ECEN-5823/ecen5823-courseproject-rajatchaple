@@ -47,10 +47,10 @@
 
 //defines in which Energy mode a device is allowed to get into
 //SELECT DESIRED ENERGY MODE
-#define LOWEST_ENERGY_MODE EM2	//device is allowed to get into this mode...
+#define LOWEST_ENERGY_MODE EM1	//device is allowed to get into this mode...
 
 //#define LETIMER_ON_TIME_MS  0//175 //
-#define LETIMER_PERIOD_MS  (3000)//2250 //
+#define LETIMER_PERIOD_MS  (1000)//2250 //
 
 //Oscillator frequency selection based on Energy Mode
 #if (LOWEST_ENERGY_MODE >= EM0) && (LOWEST_ENERGY_MODE <= EM2)
@@ -93,13 +93,18 @@ int appMain(gecko_configuration_t *config);
 
 // MACROS definitions here
 // BLE works in EM2
-#define LOWEST_ENERGY_MODE sleepEM1
+// I2C works in EM1
+#define SLEEP_MODE_BLOCKED sleepEM3
 #define ENABLE_SLEEPING 1
-
-
 #define LETIMER_PERIOD_MS 3000 // 3s
+#define BOND_DISCONNECT 0
 
-
+/*
+#define SLEEP_MODE_BLOCKED sleepEM4
+#define ENABLE_SLEEPING 1
+#define LETIMER_PERIOD_MS 10000 // 10s
+#define BOND_DISCONNECT 1
+*/
 
 // function prototypes
 int appMain(gecko_configuration_t *config);

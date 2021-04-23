@@ -32,6 +32,8 @@
 #define PB0_pin					(6)
 #define PB1_port				(gpioPortF)
 #define PB1_pin					(7)
+#define PROX_INTRPT_port		(gpioPortD)
+#define PROX_INTRPT_pin			(10)
 
 #define GPIO_SET_DISPLAY_EXT_COMIN_IMPLEMENTED 1
 #define TIMER_SUPPORTS_1HZ_TIMER_EVENT 1

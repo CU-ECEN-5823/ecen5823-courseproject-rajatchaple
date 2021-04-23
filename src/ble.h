@@ -51,6 +51,9 @@
 
 #define BLE_ADDR_LENGTH					(6)
 
+#define IO_CAPABILITY  				   0 // 0=DISPLAYONLY
+#define SM_CONFIG_FLAGS 			  (0x0A) // encrypted link and bonding should be confirmed
+
 //datatypes and global variables
 typedef struct tx_power_based_on_rssi_t{
 	int8_t rssi_range_max;
@@ -73,19 +76,29 @@ typedef struct ble_status_s{
 	connection_status_t connection_status;
 }ble_status_t;
 
+enum custom_services_to_be_implemented{
+	IMU_SERVICE,
+	USER_CONTROL_SERVICE
+};
+
+enum custom_characteristics_to_be_implemented{
+	AXIS_ORIENTATION_CHARACTERISTIC,
+	TIMER_UNTIL_TRIGGER_CHARACTERISTIC
+};
+
 typedef struct ble_client_s{
 	ble_status_t status;
 	struct{
 		uint32_t handle;
 		bool procedure_complete_status;
-	}service;
+	}service[2];
 	struct{
 			uint32_t handle;
 			bool procedure_complete_status;
-		}characteristic;
+		}characteristic[2];
 	struct{
 			bool procedure_complete_status;
-		}indication;
+		}indication[2];
 }ble_client_t;
 
 //function prototypes
@@ -111,9 +124,11 @@ float bitstream_to_float(const uint8_t *);
 #define SERVICE_HANDLE_INVALID        (uint32_t)0xFFFFFFFFu
 #define CHARACTERISTIC_HANDLE_INVALID (uint16_t)0xFFFFu
 
+#define IO_CAPABILITY  				   0 // 0=DISPLAYONLY
+#define SM_CONFIG_FLAGS 			  (0x0A) // encrypted link and bonding should be confirmed
 // AS8
-#define IO_CAPABILITY  				  1 // 1=DISPLAYYESNO
-#define SM_CONFIG_FLAGS 			  (0x09) // MITM protection and bonding should be confirmed
+//#define IO_CAPABILITY  				  1 // 1=DISPLAYYESNO
+//#define SM_CONFIG_FLAGS 			  (0x09) // MITM protection and bonding should be confirmed
 
 #include "native_gecko.h"
 #include "scheduler.h"
@@ -126,6 +141,7 @@ float bitstream_to_float(const uint8_t *);
 #include "ble_device_type.h"
 #include "gpio.h"
 #include "imu.h"
+#include "main.h"
 
 extern uint8_t connected_status_flag;
 extern uint8_t conn_handle;
@@ -139,8 +155,6 @@ extern const uint8_t ecen5823_encryption_test_service_UUID[16];
 
 // ECEN5823 Encrypted button state characteristic
 extern const uint8_t ecen5823_encryption_button_state_UUID[16];
-
-
 
 
 void handle_ble_event(struct gecko_cmd_packet *evt);
