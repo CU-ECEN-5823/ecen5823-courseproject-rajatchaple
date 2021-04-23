@@ -134,7 +134,7 @@ void state_machine_measure_temperature(struct gecko_cmd_packet* evt)
 
 						//displaying
 						sprintf(temperature_str,"temp = %.2f",temperature);
-						displayPrintf(DISPLAY_ROW_TEMPVALUE, temperature_str);
+						displayPrintf(DISPLAY_ROW_POSTURE, temperature_str);
 
 						if(ble_status.htp_indication_status == true)
 						  {
@@ -192,11 +192,11 @@ void event_handler_proximity_state(struct gecko_cmd_packet* evt)
 			if(inactive_timer_seconds > 0)
 				{
 				inactive_timer_seconds -= (LETIMER_PERIOD_MS / MILLISECONDS_IN_SECOND);
-				displayPrintf(DISPLAY_ROW_CLIENTADDR, "ACTIVE (%d)", (inactive_timer_seconds + 1));
+				displayPrintf(DISPLAY_ROW_INACTIVITY, "ACTIVE (%d)", (inactive_timer_seconds + 1));
 				}
 			else
 				{
-				displayPrintf(DISPLAY_ROW_CLIENTADDR, "INACTIVE");
+				displayPrintf(DISPLAY_ROW_INACTIVITY, "INACTIVE");
 				}
 
 			if(pobp_tut_timer_seconds > 0)
@@ -204,18 +204,18 @@ void event_handler_proximity_state(struct gecko_cmd_packet* evt)
 					if(is_bad_posture == true)
 					{
 						pobp_tut_timer_seconds -= (LETIMER_PERIOD_MS / MILLISECONDS_IN_SECOND);
-						displayPrintf(DISPLAY_ROW_TEMPVALUE, "TUT TIMER %d", (pobp_tut_timer_seconds + 1));
+						displayPrintf(DISPLAY_ROW_POSTURE, "TUT TIMER %d", (pobp_tut_timer_seconds + 1));
 					}
 					else
 					{
-						displayPrintf(DISPLAY_ROW_TEMPVALUE, "GOOD POSTURE", (pobp_tut_timer_seconds + 1));
+						displayPrintf(DISPLAY_ROW_POSTURE, "GOOD POSTURE", (pobp_tut_timer_seconds + 1));
 						pobp_tut_timer_seconds = pobp_tut_timer_seconds_initial_value;
 					}
 
 				}
 			else
 				{
-				displayPrintf(DISPLAY_ROW_TEMPVALUE, "BAD POSTURE");
+				displayPrintf(DISPLAY_ROW_POSTURE, "BAD POSTURE");
 				}
 
 			LOG_DEBUG("---------------------------------Time elapsed (inactive since) : %d", inactive_timer_seconds);
@@ -280,11 +280,11 @@ void event_handler_proximity_state(struct gecko_cmd_packet* evt)
 					elapsed_time += LETIMER_PERIOD_MS;
 					if(elapsed_time > THRESHOLD_TIME_ACTIVE_TO_INACTIVE_MS)
 					{
-						displayPrintf(DISPLAY_ROW_CLIENTADDR, "INACTIVE");
+						displayPrintf(DISPLAY_ROW_INACTIVITY, "INACTIVE");
 					}
 					else
 					{
-						displayPrintf(DISPLAY_ROW_CLIENTADDR, "ACTIVE (%d)", (((THRESHOLD_TIME_ACTIVE_TO_INACTIVE_MS - elapsed_time) / MILLISECONDS_IN_SECOND) + 1));
+						displayPrintf(DISPLAY_ROW_INACTIVITY, "ACTIVE (%d)", (((THRESHOLD_TIME_ACTIVE_TO_INACTIVE_MS - elapsed_time) / MILLISECONDS_IN_SECOND) + 1));
 					}
 					LOG_DEBUG("---------------------------------Time elapsed (inactive since) : %d", elapsed_time);
 					break;
@@ -297,7 +297,7 @@ void event_handler_proximity_state(struct gecko_cmd_packet* evt)
 //						if(proximity_sensed_value > PROXIMITY_SENSOR_THRESHOLD_VALUE)
 //						{
 //							//raise event
-//							displayPrintf(DISPLAY_ROW_CLIENTADDR, "ACTIVE");
+//							displayPrintf(DISPLAY_ROW_INACTIVITY, "ACTIVE");
 //							elapsed_time = 0;
 //						}
 						timerWaitUs(PROXIMITY_SENSOR_READ_INTERVAL);
@@ -329,7 +329,7 @@ void event_handler_proximity_state(struct gecko_cmd_packet* evt)
 								proximity_sensor_reading_states = STATE0_WRITE_REGISTER_TRANS_COMPLETED;
 								if(proximity_sensed_value > PROXIMITY_SENSOR_THRESHOLD_VALUE)
 								{
-									displayPrintf(DISPLAY_ROW_CLIENTADDR, "ACTIVE");
+									displayPrintf(DISPLAY_ROW_INACTIVITY, "ACTIVE");
 									elapsed_time = 0;
 								}
 								i2c_command_called = NO_COMMAND;	//clearing last called i2c command to turn off retries

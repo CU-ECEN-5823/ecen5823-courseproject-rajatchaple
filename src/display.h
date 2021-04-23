@@ -70,6 +70,18 @@
  * Display row definitions, used for writing specific content based on assignment requirements.
  * See assignment text for details.
  */
+//enum display_row {
+//	DISPLAY_ROW_NAME,
+//	DISPLAY_ROW_BTADDR,
+//	DISPLAY_ROW_BTADDR2,
+//	DISPLAY_ROW_CLIENTADDR,
+//	DISPLAY_ROW_CONNECTION,
+//	DISPLAY_ROW_PASSKEY,
+//	DISPLAY_ROW_ACTION,
+//	DISPLAY_ROW_TEMPVALUE,
+//	DISPLAY_ROW_MAX,
+//};
+
 enum display_row {
 	DISPLAY_ROW_NAME,
 	DISPLAY_ROW_BTADDR,
@@ -77,11 +89,10 @@ enum display_row {
 	DISPLAY_ROW_CLIENTADDR,
 	DISPLAY_ROW_CONNECTION,
 	DISPLAY_ROW_PASSKEY,
-	DISPLAY_ROW_ACTION,
-	DISPLAY_ROW_TEMPVALUE,
+	DISPLAY_ROW_POSTURE,
+	DISPLAY_ROW_INACTIVITY,
 	DISPLAY_ROW_MAX,
 };
-
 
 // function prototypes
 #if ECEN5823_INCLUDE_DISPLAY_SUPPORT

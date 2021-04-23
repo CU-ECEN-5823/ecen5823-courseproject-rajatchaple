@@ -358,14 +358,14 @@ void handle_ble_event_client(struct gecko_cmd_packet *event)
 			case gecko_evt_sm_bonded_id:
 				ble_client.status.connection_status = BONDED;
 				displayPrintf(DISPLAY_ROW_PASSKEY, "");
-				displayPrintf(DISPLAY_ROW_ACTION, "");
+//				displayPrintf(DISPLAY_ROW_ACTION, "");
 				displayPrintf(DISPLAY_ROW_CONNECTION, "Bonded");
 				break;
 
 				//This event is triggered if pairing or bonding was performed in this operation and the result is failure.
 			case gecko_evt_sm_bonding_failed_id:
 				displayPrintf(DISPLAY_ROW_PASSKEY, "");
-				displayPrintf(DISPLAY_ROW_ACTION, "");
+//				displayPrintf(DISPLAY_ROW_ACTION, "");
 				displayPrintf(DISPLAY_ROW_CONNECTION, "Bonding Failed");
 				break;
 
@@ -374,7 +374,7 @@ void handle_ble_event_client(struct gecko_cmd_packet *event)
 				LOG_DEBUG("Passkey : %d",event->data.evt_sm_confirm_passkey.passkey);
 				sprintf(passkey_str, "%d", (int)event->data.evt_sm_confirm_passkey.passkey);
 				displayPrintf(DISPLAY_ROW_PASSKEY, passkey_str);
-				displayPrintf(DISPLAY_ROW_ACTION, "Confirm with PB0");
+//				displayPrintf(DISPLAY_ROW_ACTION, "Confirm with PB0");
 				//PB0 shall react to bonding event only when state is 'passkey confirmation'
 				ble_client.status.connection_status = BONDING;
 
@@ -389,7 +389,7 @@ void handle_ble_event_client(struct gecko_cmd_packet *event)
 
 						y_axis_value = (charValue[1] << 0) + (charValue[2] << 8);
 						// Display to LCD
-						// displayPrintf(DISPLAY_ROW_TEMPVALUE, "Temp=%0.1f degC", temp);
+						// displayPrintf(DISPLAY_ROW_POSTURE, "Temp=%0.1f degC", temp);
 						LOG_DEBUG("Y-xis value: %u millirad/s", y_axis_value);
 						// Send confirmation for the indication
 						BTSTACK_CHECK_RESPONSE(gecko_cmd_gatt_send_characteristic_confirmation(event->data.evt_gatt_characteristic_value.connection));
@@ -434,7 +434,7 @@ void handle_ble_event_client(struct gecko_cmd_packet *event)
 						pobp_tut_timer_seconds_initial_value = (charValue[1] << 0);
 						pobp_tut_timer_seconds = pobp_tut_timer_seconds_initial_value;
 						// Display to LCD
-						// displayPrintf(DISPLAY_ROW_TEMPVALUE, "Temp=%0.1f degC", temp);
+						// displayPrintf(DISPLAY_ROW_POSTURE, "Temp=%0.1f degC", temp);
 						LOG_DEBUG("TUT Seconds: %u s", pobp_tut_timer_seconds);
 						BTSTACK_CHECK_RESPONSE(gecko_cmd_gatt_send_characteristic_confirmation(event->data.evt_gatt_characteristic_value.connection));
 
@@ -488,10 +488,10 @@ void handle_ble_event_client(struct gecko_cmd_packet *event)
 			case gecko_evt_le_connection_closed_id:
 				BTSTACK_CHECK_RESPONSE(gecko_cmd_le_gap_start_discovery(le_gap_phy_1m, le_gap_discover_generic));
 				displayPrintf(DISPLAY_ROW_CONNECTION, "Discovering");
-				displayPrintf(DISPLAY_ROW_TEMPVALUE, "");
+//				displayPrintf(DISPLAY_ROW_POSTURE, "");
 				displayPrintf(DISPLAY_ROW_BTADDR2, "");
 				displayPrintf(DISPLAY_ROW_PASSKEY, "");
-				displayPrintf(DISPLAY_ROW_ACTION, "");
+//				displayPrintf(DISPLAY_ROW_ACTION, "");
 				//setting Tx power to default value of 0
 				gecko_cmd_system_set_tx_power(0);
 				//delete bonding on connection close... device would be required to pair again on connection
@@ -724,7 +724,7 @@ void handle_ble_event_client(struct gecko_cmd_packet *event)
 		case gecko_evt_le_connection_closed_id:
 			BTSTACK_CHECK_RESPONSE(gecko_cmd_le_gap_start_discovery(le_gap_phy_1m, le_gap_discover_generic));
 			displayPrintf(DISPLAY_ROW_CONNECTION, "Discovering");
-			displayPrintf(DISPLAY_ROW_TEMPVALUE, "");
+			displayPrintf(DISPLAY_ROW_POSTURE, "");
 			displayPrintf(DISPLAY_ROW_BTADDR2, "");
 			displayPrintf(DISPLAY_ROW_PASSKEY, "");
 			displayPrintf(DISPLAY_ROW_ACTION, "");
