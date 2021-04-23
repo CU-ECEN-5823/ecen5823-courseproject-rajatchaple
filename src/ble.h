@@ -51,6 +51,9 @@
 
 #define BLE_ADDR_LENGTH					(6)
 
+#define IO_CAPABILITY  				   0 // 0=DISPLAYONLY
+#define SM_CONFIG_FLAGS 			  (0x0A) // encrypted link and bonding should be confirmed
+
 //datatypes and global variables
 typedef struct tx_power_based_on_rssi_t{
 	int8_t rssi_range_max;
@@ -73,19 +76,29 @@ typedef struct ble_status_s{
 	connection_status_t connection_status;
 }ble_status_t;
 
+enum custom_services_to_be_implemented{
+	IMU_SERVICE,
+	USER_CONTROL_SERVICE
+};
+
+enum custom_characteristics_to_be_implemented{
+	AXIS_ORIENTATION_CHARACTERISTIC,
+	TIMER_UNTIL_TRIGGER_CHARACTERISTIC
+};
+
 typedef struct ble_client_s{
 	ble_status_t status;
 	struct{
 		uint32_t handle;
 		bool procedure_complete_status;
-	}service;
+	}service[2];
 	struct{
 			uint32_t handle;
 			bool procedure_complete_status;
-		}characteristic;
+		}characteristic[2];
 	struct{
 			bool procedure_complete_status;
-		}indication;
+		}indication[2];
 }ble_client_t;
 
 //function prototypes

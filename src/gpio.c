@@ -46,7 +46,10 @@ void gpioInit()
 
 	GPIO_PinModeSet(PB0_port, PB0_pin, gpioModeInputPullFilter, true);	//DOUT : true means pull-up
 	GPIO_ExtIntConfig (PB0_port, PB0_pin, PB0_pin, true, true, true);
-	NVIC_EnableIRQ(GPIO_EVEN_IRQn);
+	GPIO_PinModeSet(PROX_INTRPT_port, PROX_INTRPT_pin, gpioModeInputPullFilter, true);	//DOUT : true means pull up
+	GPIO_ExtIntConfig (PROX_INTRPT_port, PROX_INTRPT_pin, PROX_INTRPT_pin, false, true, true);	//enable at falling edge
+
+
 
 }// gpioInit()
 

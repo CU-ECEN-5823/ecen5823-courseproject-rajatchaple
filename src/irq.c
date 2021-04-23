@@ -69,7 +69,11 @@ void I2C0_IRQHandler()
 		scheduler_set_event_I2C_transfer_complete();
 		CORE_EXIT_CRITICAL();
 	}
-	if(transfer_status == i2cTransferNack)
+	if((transfer_status == i2cTransferNack)
+			|| (transfer_status == i2cTransferBusErr)
+			|| (transfer_status == i2cTransferArbLost)
+			|| (transfer_status == i2cTransferUsageFault)
+			|| (transfer_status == i2cTransferSwFault))
 	{
 		CORE_DECLARE_IRQ_STATE;
 		CORE_ENTER_CRITICAL();
@@ -92,11 +96,18 @@ void GPIO_EVEN_IRQHandler()
 
 	CORE_DECLARE_IRQ_STATE;
 	CORE_ENTER_CRITICAL();
-
-	if(GPIO_PinInGet(PB0_port, PB0_pin) == false)
-		scheduler_set_event_PB0_switch_high_to_low();
-	else if(GPIO_PinInGet(PB0_port, PB0_pin) == true)
-		scheduler_set_event_PB0_switch_low_to_high();
+	if(reason == 64)
+	{
+		if(GPIO_PinInGet(PB0_port, PB0_pin) == false)
+			scheduler_set_event_PB0_switch_high_to_low();
+		else if(GPIO_PinInGet(PB0_port, PB0_pin) == true)
+			scheduler_set_event_PB0_switch_low_to_high();
+	}
+	else if(reason == 1024)
+	{
+		scheduler_set_event_proximity_detected();
+		//Interuupt on proximity received
+	}
 
 	CORE_EXIT_CRITICAL();
 

@@ -47,10 +47,10 @@
 
 //defines in which Energy mode a device is allowed to get into
 //SELECT DESIRED ENERGY MODE
-#define LOWEST_ENERGY_MODE EM2	//device is allowed to get into this mode...
+#define LOWEST_ENERGY_MODE EM1	//device is allowed to get into this mode...
 
 //#define LETIMER_ON_TIME_MS  0//175 //
-#define LETIMER_PERIOD_MS  (3000)//2250 //
+#define LETIMER_PERIOD_MS  (1000)//2250 //
 
 //Oscillator frequency selection based on Energy Mode
 #if (LOWEST_ENERGY_MODE >= EM0) && (LOWEST_ENERGY_MODE <= EM2)

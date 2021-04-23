@@ -22,6 +22,8 @@
 #include "ble.h"
 #include "display.h"
 
+#define THRESHOLD_TIME_ACTIVE_TO_INACTIVE_S	(25)	//milliseconds
+#define INITIAL_TIME_UNTIL_TRIGGER_FOR_BAD_POSTURE_S	(10)	//milliseconds
 
 
 //Declarations
@@ -34,6 +36,12 @@ typedef enum temp_sensor_states{
 	MY_NUM_STATES
 }temp_sensor_states_t;
 
+//typedef enum proximity_sensor_states{
+//	STATE0_TIMER_WAIT_FOR_ELAPSED_TIME,
+//	STATE1_WAIT_FOR_READING_INTERVAL,
+//	NUM_STATES
+//}proximity_sensor_states_t
+
 enum events{
 	LETIMER_UF_INTERRUPT_EVENT = 0x00000001,
 	LETIMER_COMP1_INTERRUPT_EVENT = 0x00000002,
@@ -42,11 +50,13 @@ enum events{
 	PB0_SWITCH_HIGH_TO_LOW = 0x00000010,
 	PB0_SWITCH_LOW_TO_HIGH = 0x00000020,
 	PB1_SWITCH_LOW_TO_HIGH = 0x00000040,
-	LAST_EVENT_IN_THE_LIST = PB1_SWITCH_LOW_TO_HIGH
+	PROXIMITY_DETECTED = 0x00000080,
+	LAST_EVENT_IN_THE_LIST = PROXIMITY_DETECTED
 };
 
 
 //function prototypes
+void scheduler_set_event_proximity_detected(void);
 void scheduler_set_event_PB0_switch_high_to_low(void);
 void scheduler_set_event_PB0_switch_low_to_high(void);
 void scheduler_set_event_PB1_switch_low_to_high(void);
@@ -56,6 +66,7 @@ void scheduler_set_event_I2C_transfer_complete(void);
 void scheduler_set_event_I2C_transfer_retry(void);
 uint32_t get_event(void);
 bool event_present(void);
+void event_handler_proximity_state(struct gecko_cmd_packet* evt);
 void state_machine_measure_temperature(struct gecko_cmd_packet* evt);
 void state_machine_proximity_state(struct gecko_cmd_packet* evt);
 void indicate_temperature_over_ble(float);
