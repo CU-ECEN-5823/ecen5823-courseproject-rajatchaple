@@ -323,6 +323,7 @@ void handle_ble_event_client(struct gecko_cmd_packet *event)
 //						LOG_DEBUG("Procedure completed for Time Until Trigger indication");
 						LOG_DEBUG("Indications turned on for both the characteristics");
 						ble_client.indication[TIMER_UNTIL_TRIGGER_CHARACTERISTIC].procedure_complete_status = true;
+						displayPrintf(DISPLAY_ROW_CONNECTION, "Handling Indications");
 					}
 
 				}
