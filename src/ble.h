@@ -124,11 +124,11 @@ float bitstream_to_float(const uint8_t *);
 #define SERVICE_HANDLE_INVALID        (uint32_t)0xFFFFFFFFu
 #define CHARACTERISTIC_HANDLE_INVALID (uint16_t)0xFFFFu
 
+
 #define IO_CAPABILITY  				   0 // 0=DISPLAYONLY
 #define SM_CONFIG_FLAGS 			  (0x0A) // encrypted link and bonding should be confirmed
-// AS8
-//#define IO_CAPABILITY  				  1 // 1=DISPLAYYESNO
-//#define SM_CONFIG_FLAGS 			  (0x09) // MITM protection and bonding should be confirmed
+//#define IO_CAPABILITY  				   1 // 0=DISPLAYYESNO
+//#define SM_CONFIG_FLAGS 			  (0x09) // MITM protection, bonding should be confirmed
 
 #include "native_gecko.h"
 #include "scheduler.h"
