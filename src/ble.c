@@ -427,6 +427,7 @@ void handle_ble_event_client(struct gecko_cmd_packet *event)
 						is_bad_posture = true;
 #else
 							y_axis_reference_value = y_axis_value;
+							LOG_DEBUG("Reference value is set to %d, y_axis_reference_value");
 #endif
 							y_axis_reference_value_set = true;
 						}
