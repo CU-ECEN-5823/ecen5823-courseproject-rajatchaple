@@ -10,7 +10,7 @@
  **********************************************************************************************/
 
 //Includes
-//#define INCLUDE_LOG_DEBUG 1
+#define INCLUDE_LOG_DEBUG 1
 #include "ble_device_type.h"
 #if BUILD_INCLUDES_BLE_CLIENT
 #include "log.h"
@@ -55,8 +55,8 @@ ble_status_t ble_status = {
 		.connection_status = DISCONNECTED
 };
 
-int16_t y_axis_value;
-int16_t y_axis_reference_value = 0;
+uint16_t y_axis_value;
+uint16_t y_axis_reference_value = 0;
 bool y_axis_reference_value_set = false;
 uint8_t* charValue;
 bool is_bad_posture = false;;
@@ -401,7 +401,7 @@ void handle_ble_event_client(struct gecko_cmd_packet *event)
 						if(y_axis_reference_value_set == true)
 						{
 							//if posture is within set margin
-							if(((y_axis_reference_value - (ORIENTATION_MARGIN / 2)) > y_axis_value) && (y_axis_value < (y_axis_reference_value + (ORIENTATION_MARGIN / 2))))
+							if(((y_axis_reference_value + (ORIENTATION_MARGIN / 2)) > y_axis_value) && (y_axis_value > (y_axis_reference_value - (ORIENTATION_MARGIN / 2))))
 							{
 								is_bad_posture = false;
 								pobp_tut_timer_seconds = pobp_tut_timer_seconds_initial_value;
@@ -427,7 +427,7 @@ void handle_ble_event_client(struct gecko_cmd_packet *event)
 						is_bad_posture = true;
 #else
 							y_axis_reference_value = y_axis_value;
-							LOG_DEBUG("Reference value is set to %d, y_axis_reference_value");
+							LOG_DEBUG("Reference value is set to %u", y_axis_reference_value);
 #endif
 							y_axis_reference_value_set = true;
 						}

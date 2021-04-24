@@ -171,7 +171,7 @@ void event_handler_proximity_state(struct gecko_cmd_packet* evt)
 
 
 
-	static bool enable_events = true;
+/*	static bool enable_events = true;
 //	current_state = next_state;
 
 	static enum proximity_sensor_reading_states_t{
@@ -183,7 +183,7 @@ void event_handler_proximity_state(struct gecko_cmd_packet* evt)
 			NO_COMMAND,
 			WRITE,
 			READ
-		}i2c_command_called = NO_COMMAND;
+		}i2c_command_called = NO_COMMAND;*/
 
 	switch(event)
 	{
@@ -191,12 +191,16 @@ void event_handler_proximity_state(struct gecko_cmd_packet* evt)
 
 			if(inactive_timer_seconds > 0)
 				{
-				inactive_timer_seconds -= (LETIMER_PERIOD_MS / MILLISECONDS_IN_SECOND);
-				displayPrintf(DISPLAY_ROW_INACTIVITY, "ACTIVE (%d)", (inactive_timer_seconds + 1));
+					inactive_timer_seconds -= (LETIMER_PERIOD_MS / MILLISECONDS_IN_SECOND);
+					displayPrintf(DISPLAY_ROW_INACTIVITY, "ACTIVE (%d)", (inactive_timer_seconds + 1));
+					// turn LED1 off
+					gpioLed1SetOff();
 				}
 			else
 				{
-				displayPrintf(DISPLAY_ROW_INACTIVITY, "INACTIVE");
+					displayPrintf(DISPLAY_ROW_INACTIVITY, "INACTIVE");
+					// turn on LED1 here
+					gpioLed1SetOn();
 				}
 
 			if(pobp_tut_timer_seconds > 0)
@@ -210,12 +214,20 @@ void event_handler_proximity_state(struct gecko_cmd_packet* evt)
 					{
 						displayPrintf(DISPLAY_ROW_POSTURE, "GOOD POSTURE", (pobp_tut_timer_seconds + 1));
 						pobp_tut_timer_seconds = pobp_tut_timer_seconds_initial_value;
+						// turn off led0
+						gpioLed0SetOff();
+
+
+
 					}
 
 				}
 			else
 				{
-				displayPrintf(DISPLAY_ROW_POSTURE, "BAD POSTURE");
+					displayPrintf(DISPLAY_ROW_POSTURE, "BAD POSTURE");
+					// turn on led0
+					gpioLed0SetOn();
+
 				}
 
 			LOG_DEBUG("---------------------------------Time elapsed (inactive since) : %d", inactive_timer_seconds);
