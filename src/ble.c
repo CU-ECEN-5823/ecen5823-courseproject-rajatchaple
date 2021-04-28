@@ -171,8 +171,13 @@ void handle_ble_event_client(struct gecko_cmd_packet *event)
 				//setting up discovery type to passive
 				BTSTACK_CHECK_RESPONSE(gecko_cmd_le_gap_set_discovery_type(le_gap_phy_1m, 0));	//PHY = 1 and Scanning Type = Passive(0)
 				//setting up discovery timing
-				BTSTACK_CHECK_RESPONSE(gecko_cmd_le_gap_set_discovery_timing(le_gap_phy_1m, SCAN_INTERVAL_VALUE, SCAN_WINDOW_VALUE));
+				BTSTACK_CHECK_RESPONSE(gecko_cmd_le_gap_set_discovery_timing(le_gap_phy_1m, 80, 40));
 				//starting discovery
+
+				gecko_cmd_le_gap_set_conn_parameters(CONN_INTERVAL_MIN, CONN_INTERVAL_MAX,
+						                                             CONN_SLAVE_LATENCY,
+						                                             CONN_TIMEOUT);
+
 				BTSTACK_CHECK_RESPONSE(gecko_cmd_le_gap_start_discovery(le_gap_phy_1m, le_gap_discover_generic));
 
 				displayPrintf(DISPLAY_ROW_CONNECTION, "Discovering");
@@ -488,6 +493,7 @@ void handle_ble_event_client(struct gecko_cmd_packet *event)
 
 				//Event occurs when disconnected
 			case gecko_evt_le_connection_closed_id:
+
 				BTSTACK_CHECK_RESPONSE(gecko_cmd_le_gap_start_discovery(le_gap_phy_1m, le_gap_discover_generic));
 				displayPrintf(DISPLAY_ROW_CONNECTION, "Discovering");
 //				displayPrintf(DISPLAY_ROW_POSTURE, "");
@@ -905,7 +911,7 @@ void handle_ble_event(struct gecko_cmd_packet *evt)
 			displayPrintf(DISPLAY_ROW_CONNECTION, "Connected");
 
 			conn_handle = evt->data.evt_le_connection_opened.connection;
-			// 60 -> 75ms connection interval
+/*			// 60 -> 75ms connection interval
 			// 3 slave latency slots -> 4 * 75 = 300ms. But slaves listens the 4th slot. So 4-1 = 3.
 			// 70 -> supervisor timeout = (1*3)*(75*2) = 600 -> 700ms (some value greater than 600ms). 70 * 10ms. So put 70.
 			struct gecko_msg_le_connection_set_parameters_rsp_t *ret3 =  gecko_cmd_le_connection_set_parameters(conn_handle, 60, 60, 3, 70);
@@ -914,7 +920,7 @@ void handle_ble_event(struct gecko_cmd_packet *evt)
 				#if INCLUDE_LOGGING
 					LOG_ERROR("ERROR: %d | response code from gecko_cmd_le_connection_set_parameters()", ret3->result);
 				#endif
-			}
+			}*/
 
 
 			//Configure security manager here
@@ -1267,7 +1273,7 @@ void handle_ble_event(struct gecko_cmd_packet *evt)
 		// for assignment questions only
 		case gecko_evt_le_connection_parameters_id:
 		{
-			/* uint16_t value = evt->data.evt_le_connection_parameters.interval;
+			uint16_t value = evt->data.evt_le_connection_parameters.interval;
 			{
 				#if INCLUDE_LOGGING
 					LOG_INFO("gecko_evt_le_connection_parameters_id-interval: %d", value);
@@ -1288,7 +1294,7 @@ void handle_ble_event(struct gecko_cmd_packet *evt)
 					LOG_INFO("gecko_evt_le_connection_parameters_id-timeout: %d", value);
 
 				#endif
-			}*/
+			}
 
 		}
 			break;

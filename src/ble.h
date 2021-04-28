@@ -37,6 +37,12 @@
 #define SCAN_INTERVAL_MS			(50)
 #define SCAN_WINDOW_MS				(25)
 
+// connection parameters
+#define CONN_INTERVAL_MIN             80   //100ms
+#define CONN_INTERVAL_MAX             80   //100ms
+#define CONN_SLAVE_LATENCY            4    //4 slots
+#define CONN_TIMEOUT                  200  //2000ms
+
 
 #define ADVERTISE_INTERVAL_MIN_VALUE 	(ADVERTISE_INTERVAL_MIN_MS/0.625)
 #define ADVERTISE_INTERVAL_MAX_VALUE 	(ADVERTISE_INTERVAL_MAX_MS/0.625)
@@ -114,11 +120,7 @@ float bitstream_to_float(const uint8_t *);
 #ifndef __BLE_H__
 #define __BLE_H__
 
-// connection parameters
-#define CONN_INTERVAL_MIN             80   //100ms
-#define CONN_INTERVAL_MAX             80   //100ms
-#define CONN_SLAVE_LATENCY            0    //no latency
-#define CONN_TIMEOUT                  100  //1000ms
+
 
 #define CONNECTION_HANDLE_INVALID     (uint8_t)0xFFu
 #define SERVICE_HANDLE_INVALID        (uint32_t)0xFFFFFFFFu

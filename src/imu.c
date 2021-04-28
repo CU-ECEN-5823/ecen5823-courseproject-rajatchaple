@@ -76,12 +76,6 @@ void I2C0_init(void)
 void turn_on_IMU(void)
 {
 
-	// Turn on sensor.
-	// Boot time for FXOS8700 is 1000uS or 1ms. Since there is an enable I2C pins instruction below before we send
-	// standby signal we need not wait for an additional 1ms.
-	// Also there will be enough time for FXAS21002 to boot before standby signal is issued to it.
-
-
 	// Enable SCL and SDA lines.
 	GPIO_PinModeSet(I2C0_SCL_port, I2C0_SCL_pin, gpioModeWiredAndPullUp, true);
 	GPIO_PinModeSet(I2C0_SDA_port, I2C0_SDA_pin, gpioModeWiredAndPullUp, true);
