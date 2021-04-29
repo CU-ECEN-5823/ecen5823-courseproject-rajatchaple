@@ -12,7 +12,7 @@
 #if BUILD_INCLUDES_BLE_CLIENT
 #include "log.h"
 #include "timers.h"
-#include "sensors_config.h"
+#include "proximity.h"
 
 //#define DEBUG
 

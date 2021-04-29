@@ -21,7 +21,7 @@
 //#define INCLUDE_LOG_DEBUG 1
 #include "log.h"
 #include "main.h"
-#include "sensors_config.h"
+#include "proximity.h"
 
 extern I2C_TransferReturn_TypeDef transfer_status;
 
@@ -56,7 +56,8 @@ int appMain(gecko_configuration_t *config)
 	//i2c0 configuration for clock and pins
 	i2c_init();
 	proximity_sensor_config();
-//	test_proximity_sensor();
+//	test_proximity_sensor();	//Uncomment to Test proximity sensors functionality
+
 	//Sleep configuration
 	SLEEP_Init_t sleepConfig = {0};
 	SLEEP_InitEx(&sleepConfig);
@@ -73,10 +74,6 @@ int appMain(gecko_configuration_t *config)
 
 	//initializing display on Gecko board
 	displayInit();	//same enable line also powers up I2C0 hence commented I2C0enable below
-	//I2C0_enable(true);	//Power on  and connect Si7021
-
-
-
 
 	//Interrupts configuration for LETIMER0 (IF register)
 	LETIMER_IntEnable(LETIMER0, LETIMER_IEN_UF);
@@ -89,11 +86,6 @@ int appMain(gecko_configuration_t *config)
 
 	NVIC_EnableIRQ(GPIO_EVEN_IRQn);
 
-//	while(gecko_event_pending())
-//	{
-//		//reading out all events before entering main loop to vlear out all pending interrupts
-//		event = gecko_wait_event();
-//	}
 
 	//enabling interrupt using interrupt control register
 	blocking_write_i2c(0x89, 0b00000010);
@@ -112,23 +104,12 @@ int appMain(gecko_configuration_t *config)
 		{
 			logFlush();
 		}
-//		else
-//		{
-			//Waiting for Bluetooth event. Allowed to enter sleep mode EM2
 			event = gecko_wait_event();
 
-			//Perform actions based on event occurred... do not pass I2C events to handle_ble_event_client
-//			if((event->data.evt_system_external_signal.extsignals != I2C_TRANSFER_COMPLETE) ||
-//					(event->data.evt_system_external_signal.extsignals != I2C_TRANSFER_RETRY) ||
-//					(event->data.evt_system_external_signal.extsignals != I2C_TRANSFER_RETRY))
-				handle_ble_event_client(event);
+			handle_ble_event_client(event);
+
 			if(BGLIB_MSG_ID(event->header) == gecko_evt_system_external_signal_id)
 				event_handler_proximity_state(event);
-	//		state_machine_measure_temperature(event);
-
-
-
-//		}// while(1)
 
 		if((transfer_status == i2cTransferDone) && (BGLIB_MSG_ID(event->header) == gecko_evt_system_external_signal_id))
 		{

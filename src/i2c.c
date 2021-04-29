@@ -68,7 +68,6 @@ void I2C0_enable(bool value)
 		}
 }
 
-#ifndef USE_I2CSPM
 /** -------------------------------------------------------------------------------------------
  * @brief i2c routine to write data to sensor over i2c
  *
@@ -77,10 +76,7 @@ void I2C0_enable(bool value)
  *-------------------------------------------------------------------------------------------- **/
 I2C_TransferReturn_TypeDef i2c_write(uint8_t* data)
 {
-//	I2C_TransferSeq_TypeDef write_seq;
-//	LOG_INFO("writing data");
 	NVIC_DisableIRQ(I2C0_IRQn);
-	//change this remove data
 	seq.addr = SENSOR_I2C_ADDRESS << 1;
 	seq.flags = I2C_FLAG_WRITE;
 	seq.buf[0].data = data;
@@ -98,12 +94,9 @@ I2C_TransferReturn_TypeDef i2c_write(uint8_t* data)
  *-------------------------------------------------------------------------------------------- **/
 I2C_TransferReturn_TypeDef i2c_read(uint8_t* data_buffer)
 {
-//	LOG_INFO("reading data");
 	NVIC_DisableIRQ(I2C0_IRQn);
-	//I2C_TransferSeq_TypeDef read_seq;
 	seq.addr = SENSOR_I2C_ADDRESS << 1;
 	seq.flags = I2C_FLAG_READ;
-	//seq.buf[0].data = read_data;
 	seq.buf[0].data = data_buffer;
 	seq.buf[0].len = 1;
 
@@ -121,9 +114,6 @@ I2C_TransferReturn_TypeDef i2c_read(uint8_t* data_buffer)
  *-------------------------------------------------------------------------------------------- **/
 I2C_TransferReturn_TypeDef i2c_write_write(uint8_t* data)
 {
-//	I2C_TransferSeq_TypeDef write_seq;
-	I2C_TransferReturn_TypeDef ret;
-
 	NVIC_DisableIRQ(I2C0_IRQn);
 	seq.addr = SENSOR_I2C_ADDRESS << 1;
 	seq.flags = I2C_FLAG_WRITE_WRITE;
@@ -136,70 +126,6 @@ I2C_TransferReturn_TypeDef i2c_write_write(uint8_t* data)
 	return transfer_status;
 }
 
-#else
-
-/** -------------------------------------------------------------------------------------------
- * @brief i2c routine to write data to sensor over i2c
- *
- * @param true/false
- * @return None
- *-------------------------------------------------------------------------------------------- **/
-I2C_TransferReturn_TypeDef i2c_write(uint8_t data*)
-{
-	I2C_TransferSeq_TypeDef write_seq;
-	I2C_TransferReturn_TypeDef ret;
-
-	write_seq.addr = SENSOR_I2C_ADDRESS << 1;
-	write_seq.flags = I2C_FLAG_WRITE;
-	write_seq.buf[0].data = data;
-	write_seq.buf[0].len = 1;
-	ret = I2CSPM_Transfer(I2C0, &write_seq);
-	return ret;
-}
-
-/** -------------------------------------------------------------------------------------------
- * @brief i2c routine to write data to sensor over i2c
- *
- * @param true/false
- * @return None
- *-------------------------------------------------------------------------------------------- **/
-I2C_TransferReturn_TypeDef i2c_write_write(uint8_t* data)
-{
-	I2C_TransferSeq_TypeDef write_seq;
-	I2C_TransferReturn_TypeDef ret;
-
-	write_seq.addr = SENSOR_I2C_ADDRESS << 1;
-	write_seq.flags = I2C_FLAG_WRITE_WRITE;
-	write_seq.buf[0].data = data;
-	write_seq.buf[0].len = 2;
-	ret = I2CSPM_Transfer(I2C0, &write_seq);
-	return ret;
-}
-
-/** -------------------------------------------------------------------------------------------
- * @brief i2c routine to read data from sensor over i2c
- *
- * @param true/false
- * @return Temperature value
- *-------------------------------------------------------------------------------------------- **/
-I2C_TransferReturn_TypeDef i2c_read(uint8_t* data_buffer)
-{
-//	uint8_t read_data[2] = {0};
-//	uint16_t temperature_code = 0;
-	I2C_TransferSeq_TypeDef seq;
-	I2C_TransferReturn_TypeDef ret;
-
-
-	seq.addr = SENSOR_I2C_ADDRESS << 1;
-	seq.flags = I2C_FLAG_READ;
-	seq.buf[0].data = data_buffer;
-	seq.buf[0].len = 1;
-	ret = I2CSPM_Transfer(I2C0, &seq);
-
-	return ret;
-}
-
-#endif
 
 #else
 #endif

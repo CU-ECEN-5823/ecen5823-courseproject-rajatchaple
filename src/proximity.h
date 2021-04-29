@@ -1,6 +1,6 @@
 /*********************************************************************************************
- *  @file sensors_config.h
- *	@brief This file contains defines, includes and typedefs for sensors_config.c
+ *  @file proximity.h
+ *	@brief This file contains defines, includes and typedefs for proximity.c
  *
  *  @author : Rajat Chaple
  *  @date Created on: Apr 15, 2021
@@ -14,7 +14,6 @@
 #define PROXIMITY_SENSOR_READ_INTERVAL	500000 //microseconds
 #define PROXIMITY_SENSOR_THRESHOLD_VALUE	(3000)
 
-#define INTERRUPT_BASED_PROXIMITY_MEASUREMENT
 
 //typedef enum proximity_sensor_tests_e
 enum proximity_sensor_tests

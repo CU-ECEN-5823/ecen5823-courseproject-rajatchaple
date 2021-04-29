@@ -10,7 +10,7 @@
  **********************************************************************************************/
 
 //Includes
-#define INCLUDE_LOG_DEBUG 1
+#define INCLUDE_LOG_DEBUG 0
 #include "ble_device_type.h"
 #if BUILD_INCLUDES_BLE_CLIENT
 #include "log.h"
@@ -20,15 +20,6 @@
 #include "scheduler.h"
 //defines
 #define ORIENTATION_MARGIN (60)		//(ref_value - 30) to (ref_value + 30)
-
-//#define TEST
-
-//variables
-const uint8_t htp_service[2] = { 0x09, 0x18 };	//UUID for htp service
-const uint8_t htp_characteristic[2] = { 0x1c, 0x2a };	//UUID for htp characteristic
-
-const uint8_t server_button_service[16] = {0x89, 0x62, 0x13, 0x2d, 0x2a, 0x65, 0xec, 0x87, 0x3e, 0x43, 0xc8, 0x38, 0x01, 0x00, 0x00, 0x00}; //{00000001-38c8-433e-87ec-652a2d136289}
-const uint8_t server_button_characteristic[16] = {0x89, 0x62, 0x13, 0x2d, 0x2a, 0x65, 0xec, 0x87, 0x3e, 0x43, 0xc8, 0x38, 0x02, 0x00, 0x00, 0x00}; //{00000002-38c8-433e-87ec-652a2d136289}
 
 const uint8_t IMU_service_UUID[16] = {0x94, 0x62, 0x13, 0x2d, 0x2a, 0x65, 0xec, 0x87, 0x3e, 0x43, 0xc8, 0x38, 0x01, 0x00, 0x00, 0x00};
 const uint8_t axis_orientation_char_UUID[16] = {0x95, 0x62, 0x13, 0x2d, 0x2a, 0x65, 0xec, 0x87, 0x3e, 0x43, 0xc8, 0x38, 0x01, 0x00, 0x00, 0x00};
@@ -67,21 +58,8 @@ extern uint16_t pobp_tut_timer_seconds;	//period of  bad posture Time until Trig
 extern uint16_t pobp_tut_timer_seconds_initial_value;
 
 
-//extern uint32_t bad_posture_time = 0;;
-
 #if BUILD_INCLUDES_BLE_CLIENT
 
-/*
- * enum custom_services_to_be_implemented{
-	IMU_SERVICE,
-	USER_CONTROL_SERVICE
-};
-
-enum custom_characteristics_to_be_implemented{
-	AXIS_ORIENTATION_CHARACTERISTIC,
-	TIMER_UNTIL_TRIGGER_CHARACTERISTIC
-};
- */
 ble_client_t ble_client ={
 	.status ={
 		.connection_handle = 0,
@@ -229,12 +207,12 @@ void handle_ble_event_client(struct gecko_cmd_packet *event)
 				//Event occurs when service for which discovery initiated is found
 			case gecko_evt_gatt_service_id:
 //				LOG_DEBUG("Service found");
-				if(!strncmp(event->data.evt_gatt_service.uuid.data, IMU_service_UUID, sizeof(IMU_service_UUID)))
+				if(!strncmp((const char *)event->data.evt_gatt_service.uuid.data, (const char *)IMU_service_UUID, sizeof(IMU_service_UUID)))
 				{
 					ble_client.service[IMU_SERVICE].handle = event->data.evt_gatt_service.service;	//interested service found ... here server_button
 //					LOG_DEBUG("IMU Service found");
 				}
-				else if(!strncmp(event->data.evt_gatt_service.uuid.data, user_control_UUID, sizeof(user_control_UUID)))
+				else if(!strncmp((const char *)event->data.evt_gatt_service.uuid.data, (const char *)user_control_UUID, sizeof(user_control_UUID)))
 				{
 					ble_client.service[USER_CONTROL_SERVICE].handle = event->data.evt_gatt_service.service;	//interested service found ... here server_button
 //						LOG_DEBUG("User control Service found");
@@ -244,12 +222,12 @@ void handle_ble_event_client(struct gecko_cmd_packet *event)
 				//Event occurs when service for which discovery initiated is found
 			case gecko_evt_gatt_characteristic_id:
 //				LOG_DEBUG("Characteristic found");
-				if(!strncmp(event->data.evt_gatt_characteristic.uuid.data, axis_orientation_char_UUID, sizeof(axis_orientation_char_UUID)))
+				if(!strncmp((const char *)event->data.evt_gatt_characteristic.uuid.data, (const char *)axis_orientation_char_UUID, sizeof(axis_orientation_char_UUID)))
 				{
 					ble_client.characteristic[AXIS_ORIENTATION_CHARACTERISTIC].handle = event->data.evt_gatt_characteristic.characteristic;	//interested service found ... here server_button
 //					LOG_DEBUG("Axis Orientation characteristic found");
 				}
-				else if(!strncmp(event->data.evt_gatt_characteristic.uuid.data, time_until_trigger_char_UUID, sizeof(time_until_trigger_char_UUID)))
+				else if(!strncmp((const char *)event->data.evt_gatt_characteristic.uuid.data, (const char *)time_until_trigger_char_UUID, sizeof(time_until_trigger_char_UUID)))
 				{
 					ble_client.characteristic[TIMER_UNTIL_TRIGGER_CHARACTERISTIC].handle = event->data.evt_gatt_characteristic.characteristic;	//interested service found ... here server_button
 //					LOG_DEBUG("Time until characteristic characteristic found");
@@ -263,11 +241,6 @@ void handle_ble_event_client(struct gecko_cmd_packet *event)
 				if (event->data.evt_gatt_procedure_completed.result != 0)
 				{
 					LOG_DEBUG("Procedure completed with error %d", event->data.evt_gatt_procedure_completed.result);
-//					if(event->data.evt_gatt_procedure_completed.result == 0x040F)
-//					{
-//						BTSTACK_CHECK_RESPONSE(gecko_cmd_sm_increase_security(ble_client.status.connection_handle));
-//						ble_client.characteristic[0].procedure_complete_status = true; //procedure completed even though with an error
-//					}
 				}
 				else
 				{
@@ -335,27 +308,6 @@ void handle_ble_event_client(struct gecko_cmd_packet *event)
 				break;
 
 			case gecko_evt_system_external_signal_id:
-				//LOG_DEBUG("External Event : %d",event->data.evt_system_external_signal.extsignals);
-				//Creating passkey on button transition high to low
-//				if(event->data.evt_system_external_signal.extsignals == PB1_SWITCH_LOW_TO_HIGH)
-//				{
-//					if(ble_client.service[0].procedure_complete_status == true)
-//					{
-//						//making sure procedure for previous characteristic read is completed
-//						if((ble_client.characteristic[0].procedure_complete_status == true) || (ble_client.status.connection_status != BONDED))
-//						{
-//							BTSTACK_CHECK_RESPONSE(gecko_cmd_gatt_read_characteristic_value_by_uuid(ble_client.status.connection_handle, ble_client.service[0].handle, 16, (const uint8_t* )server_button_characteristic));
-//							ble_client.characteristic[0].procedure_complete_status = false;
-//						}
-//
-//					}
-//				}
-//				if(event->data.evt_system_external_signal.extsignals == PB0_SWITCH_HIGH_TO_LOW)
-//					{
-//						if(ble_client.status.connection_status == BONDING)
-//							BTSTACK_CHECK_RESPONSE(gecko_cmd_sm_passkey_confirm(ble_client.status.connection_handle, 1));	//1 means accept connection
-//					}
-
 
 				break;
 
@@ -410,13 +362,13 @@ void handle_ble_event_client(struct gecko_cmd_packet *event)
 							{
 								is_bad_posture = false;
 								pobp_tut_timer_seconds = pobp_tut_timer_seconds_initial_value;
-								LOG_DEBUG("Entered Good Posture");
+								LOG_DEBUG("In Good Posture");
 							}
 							//if bad posture
 							else
 							{
 								is_bad_posture = true;
-								LOG_DEBUG("Entered Bad Posture");
+								LOG_DEBUG("In Bad Posture");
 							}
 						}
 					}
@@ -426,14 +378,8 @@ void handle_ble_event_client(struct gecko_cmd_packet *event)
 						if(y_axis_reference_value_set == false)
 						{
 
-#ifdef TEST
-						y_axis_reference_value = 200;
-						y_axis_value = 240;
-						is_bad_posture = true;
-#else
 							y_axis_reference_value = y_axis_value;
 							LOG_DEBUG("Reference value is set to %u", y_axis_reference_value);
-#endif
 							y_axis_reference_value_set = true;
 						}
 						charValue = &(event->data.evt_gatt_characteristic_value.value.data[0]);
@@ -445,24 +391,9 @@ void handle_ble_event_client(struct gecko_cmd_packet *event)
 						LOG_DEBUG("TUT Seconds: %u s", pobp_tut_timer_seconds);
 						BTSTACK_CHECK_RESPONSE(gecko_cmd_gatt_send_characteristic_confirmation(event->data.evt_gatt_characteristic_value.connection));
 
-
-						//set POBP
-						//
-
-						// Trigger the RSSI measurement on the connection handle for this connection.
-						// Removed. TX power management done on server side only.
 					}
 
 					break;
-//					LOG_DEBUG(" char value %d", event->data.evt_gatt_characteristic_value.characteristic);
-//					if(event->data.evt_gatt_characteristic_value.value.data[0] == 1)
-//					{
-//						displayPrintf(DISPLAY_ROW_ACTION, "Button Released");
-//					}
-//					else if(event->data.evt_gatt_characteristic_value.value.data[0] == 0)
-//					{
-//						displayPrintf(DISPLAY_ROW_ACTION, "Button Pressed");
-//					}
 				}
 				break;
 
@@ -532,235 +463,7 @@ void handle_ble_event_client(struct gecko_cmd_packet *event)
 
 		}
 
-#ifdef ASSIGNMENT0
-	struct gecko_msg_system_get_bt_address_rsp_t* bt_address;
-	static bd_addr server_address = SERVER_BT_ADDRESS;
-	char passkey_str[10];
-	static bd_addr servers_address_on_connection;
-	int8_t rssi;
-	char bluetooth_addr[18];
 
-	switch (BGLIB_MSG_ID(event->header)) {
-
-			//Event occurs when Blue gecko board boots up
-		case gecko_evt_system_boot_id:
-			LOG_DEBUG("\n\nExecuting Bluetooth boot sequence");
-			//displaying server's bluetooth address on LCD
-			bt_address = gecko_cmd_system_get_bt_address();
-			sprintf(bluetooth_addr, "%x:%x:%x:%x:%x:%x", bt_address->address.addr[5], bt_address->address.addr[4],
-					bt_address->address.addr[3], bt_address->address.addr[2], bt_address->address.addr[1],
-					bt_address->address.addr[0]);
-			displayPrintf(DISPLAY_ROW_BTADDR, bluetooth_addr);
-
-			//setting Tx power to default value of 0
-			gecko_cmd_system_set_tx_power(0);
-			//delete bonding on boot... device would be required to pair again on connection
-			BTSTACK_CHECK_RESPONSE(gecko_cmd_sm_delete_bondings());
-			gecko_cmd_sm_configure(0b00000001,1);//configure as 'bonding request needs to be configured' and 1 for Display with Yes/No-buttons
-			//setting up discovery type to passive
-			BTSTACK_CHECK_RESPONSE(gecko_cmd_le_gap_set_discovery_type(le_gap_phy_1m, 0));	//PHY = 1 and Scanning Type = Passive(0)
-			//setting up discovery timing
-			BTSTACK_CHECK_RESPONSE(gecko_cmd_le_gap_set_discovery_timing(le_gap_phy_1m, SCAN_INTERVAL_VALUE, SCAN_WINDOW_VALUE));
-			//starting discovery
-			BTSTACK_CHECK_RESPONSE(gecko_cmd_le_gap_start_discovery(le_gap_phy_1m, le_gap_discover_generic));
-
-			displayPrintf(DISPLAY_ROW_CONNECTION, "Discovering");
-			break;
-
-			//Event occurs when any bluetooth device is found
-		case gecko_evt_le_gap_scan_response_id:
-			LOG_DEBUG("Device found... checking if its a device of interest");
-			//Checking if address of discovered device matches with required address
-			if (is_device_found_by_address(event->data.evt_le_gap_scan_response.address, server_address))
-			{
-				//stop scanning
-				BTSTACK_CHECK_RESPONSE(gecko_cmd_le_gap_end_procedure());
-				//connect to a device
-				BTSTACK_CHECK_RESPONSE(gecko_cmd_le_gap_connect(event->data.evt_le_gap_scan_response.address,
-						event->data.evt_le_gap_scan_response.address_type, le_gap_phy_1m));
-			}
-			break;
-
-			//Event occurs when client is connected over bluetooth
-		case gecko_evt_le_connection_opened_id:
-			//displaying server's address on LCD
-			servers_address_on_connection = event->data.evt_le_connection_opened.address;
-			sprintf(bluetooth_addr, "%x:%x:%x:%x:%x:%x", servers_address_on_connection.addr[5],
-					servers_address_on_connection.addr[4], servers_address_on_connection.addr[3],
-					servers_address_on_connection.addr[2], servers_address_on_connection.addr[1],
-					servers_address_on_connection.addr[0]);
-			displayPrintf(DISPLAY_ROW_BTADDR2, bluetooth_addr);
-			displayPrintf(DISPLAY_ROW_CONNECTION, "Connected");	//Displaying bluetooth connected over LCD
-			LOG_DEBUG("Device connected");
-			ble_client.status.connection_handle = event->data.evt_le_connection_opened.connection;
-			ble_client.status.connection_status = CONNECTED;
-			//searching for button service at connection
-			BTSTACK_CHECK_RESPONSE(gecko_cmd_gatt_discover_primary_services_by_uuid(ble_client.status.connection_handle,
-					16, (const uint8_t* )server_button_service));	//uuid length is 16 bytes
-			ble_client.service.procedure_complete_status = false;
-
-			break;
-
-			//Event occurs when service for which discovery initiated is found
-		case gecko_evt_gatt_service_id:
-			LOG_DEBUG("Service found");
-			ble_client.service.handle = event->data.evt_gatt_service.service;	//interested service found ... here server_button
-			break;
-
-			//Event occurs when procedure for various actions is completed
-		case gecko_evt_gatt_procedure_completed_id:
-			if (event->data.evt_gatt_procedure_completed.result != 0)
-			{
-				LOG_DEBUG("Procedure completed with error %d", event->data.evt_gatt_procedure_completed.result);
-				if(event->data.evt_gatt_procedure_completed.result == 0x040F)
-				{
-					BTSTACK_CHECK_RESPONSE(gecko_cmd_sm_increase_security(ble_client.status.connection_handle));
-					ble_client.characteristic.procedure_complete_status = true; //procedure completed even though with an error
-				}
-			}
-			else
-			{
-				//checking if procedure completed is for service discovery which would be executed only once on coonection
-				if (ble_client.service.procedure_complete_status == false)
-				{
-					LOG_DEBUG("Procedure completed for button service read");
-					ble_client.service.procedure_complete_status = true;
-				}
-				else if (ble_client.characteristic.procedure_complete_status == false) //checking if procedure completed is for characteristic discovery
-				{
-					LOG_DEBUG("Procedure completed for button characteristic read");
-					ble_client.characteristic.procedure_complete_status = true;
-				}
-
-			}
-			break;
-
-		case gecko_evt_system_external_signal_id:
-			//LOG_DEBUG("External Event : %d",event->data.evt_system_external_signal.extsignals);
-			//Creating passkey on button transition high to low
-			if(event->data.evt_system_external_signal.extsignals == PB1_SWITCH_LOW_TO_HIGH)
-			{
-				if(ble_client.service.procedure_complete_status == true)
-				{
-					//making sure procedure for previous characteristic read is completed
-					if((ble_client.characteristic.procedure_complete_status == true) || (ble_client.status.connection_status != BONDED))
-					{
-						BTSTACK_CHECK_RESPONSE(gecko_cmd_gatt_read_characteristic_value_by_uuid(ble_client.status.connection_handle, ble_client.service.handle, 16, (const uint8_t* )server_button_characteristic));
-						ble_client.characteristic.procedure_complete_status = false;
-					}
-
-				}
-			}
-			if(event->data.evt_system_external_signal.extsignals == PB0_SWITCH_HIGH_TO_LOW)
-				{
-					if(ble_client.status.connection_status == BONDING)
-						BTSTACK_CHECK_RESPONSE(gecko_cmd_sm_passkey_confirm(ble_client.status.connection_handle, 1));	//1 means accept connection
-				}
-
-
-			break;
-
-
-			//This event is triggered if pairing or bonding was performed in this operation and the result is success.
-		case gecko_evt_sm_bonded_id:
-			ble_client.status.connection_status = BONDED;
-			displayPrintf(DISPLAY_ROW_PASSKEY, "");
-			displayPrintf(DISPLAY_ROW_ACTION, "");
-			displayPrintf(DISPLAY_ROW_CONNECTION, "Bonded");
-			break;
-
-			//This event is triggered if pairing or bonding was performed in this operation and the result is failure.
-		case gecko_evt_sm_bonding_failed_id:
-			displayPrintf(DISPLAY_ROW_PASSKEY, "");
-			displayPrintf(DISPLAY_ROW_ACTION, "");
-			displayPrintf(DISPLAY_ROW_CONNECTION, "Bonding Failed");
-			break;
-
-
-		case gecko_evt_sm_confirm_passkey_id:
-			LOG_DEBUG("Passkey : %d",event->data.evt_sm_confirm_passkey.passkey);
-			sprintf(passkey_str, "%d", (int)event->data.evt_sm_confirm_passkey.passkey);
-			displayPrintf(DISPLAY_ROW_PASSKEY, passkey_str);
-			displayPrintf(DISPLAY_ROW_ACTION, "Confirm with PB0");
-			//PB0 shall react to bonding event only when state is 'passkey confirmation'
-			ble_client.status.connection_status = BONDING;
-
-			break;
-
-		case gecko_evt_gatt_characteristic_value_id:
-			if(event->data.evt_gatt_characteristic_value.att_opcode == gatt_read_by_type_response)
-			{
-				if(event->data.evt_gatt_characteristic_value.value.data[0] == 1)
-				{
-					displayPrintf(DISPLAY_ROW_ACTION, "Button Released");
-				}
-				else if(event->data.evt_gatt_characteristic_value.value.data[0] == 0)
-				{
-					displayPrintf(DISPLAY_ROW_ACTION, "Button Pressed");
-				}
-			}
-			// Trigger RSSI measurement on the connection
-			BTSTACK_CHECK_RESPONSE(gecko_cmd_le_connection_get_rssi(ble_client.status.connection_handle));
-			break;
-
-			//Event occurs when rssi value changes
-		case gecko_evt_le_connection_rssi_id:
-			//Setting tx power based on rssi value. Ranges and desired tx power is defined in this file by tx_power_based_on_rssi_table
-			//	{RSSI_MAX, -35, TX_POWER_MIN},
-			//		{-35, -45, -20},
-			//		{-45, -55, -15},
-			//		{-55, -65, -5},
-			//		{-65, -75, 0},
-			//		{-75, -85, 5},
-			//		{-85, RSSI_MIN, TX_POWER_MAX}
-			LOG_DEBUG("RSSI value changed. Setting new tx power");
-			rssi = event->data.evt_le_connection_rssi.rssi;
-			for (int i = 0; i < tx_power_based_on_rssi_table_length; i++)
-			{
-				if ((rssi <= ble_client.status.tx_power_based_on_rssi[i].rssi_range_max)
-						&& (rssi > ble_client.status.tx_power_based_on_rssi[i].rssi_range_min))
-				{
-					gecko_cmd_system_set_tx_power(ble_client.status.tx_power_based_on_rssi[i].tx_power * 10);//TX power in 0.1dBm steps
-					//return_set_tx_power = gecko_cmd_system_set_tx_power(ble_status.tx_power_based_on_rssi[i].tx_power*10);	//TX power in 0.1dBm steps
-					//LOG_DEBUG("RSSI is %d dBm,   Tx power (expected %d) is : %.1f", rssi, ble_status.tx_power_based_on_rssi[i].tx_power,  (return_set_tx_power->set_power/10));
-					break;
-				}
-			}
-			break;
-
-			//Event occurs when disconnected
-		case gecko_evt_le_connection_closed_id:
-			BTSTACK_CHECK_RESPONSE(gecko_cmd_le_gap_start_discovery(le_gap_phy_1m, le_gap_discover_generic));
-			displayPrintf(DISPLAY_ROW_CONNECTION, "Discovering");
-			displayPrintf(DISPLAY_ROW_POSTURE, "");
-			displayPrintf(DISPLAY_ROW_BTADDR2, "");
-			displayPrintf(DISPLAY_ROW_PASSKEY, "");
-			displayPrintf(DISPLAY_ROW_ACTION, "");
-			//setting Tx power to default value of 0
-			gecko_cmd_system_set_tx_power(0);
-			//resetting flags and handles
-			ble_client.status.connection_handle = 0;
-			ble_client.status.connection_status = DISCONNECTED;
-			ble_client.status.htp_indication_status = false;
-			ble_client.service.handle = 0;
-			ble_client.service.procedure_complete_status = true;
-			ble_client.characteristic.handle = 0;
-			ble_client.characteristic.procedure_complete_status = true;
-			ble_client.indication.procedure_complete_status = true;
-			break;
-
-			//Event occurs at 1Hz
-		case gecko_evt_hardware_soft_timer_id:
-			//refreshing LCD
-			displayUpdate();
-			break;
-
-		default:
-			break;
-
-	}
-
-#endif
 }
 
 /** ---------------------------------------------------------------------------------------------------------

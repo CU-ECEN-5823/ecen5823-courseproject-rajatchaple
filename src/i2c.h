@@ -19,7 +19,6 @@
 
 //defines
 #define CMD_MEASURE_TEMPERATURE 	  		(0xF3)
-//#define USE_I2CSPM
 
 //function prototypes
 void i2c_init(void);

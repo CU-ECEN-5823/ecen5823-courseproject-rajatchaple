@@ -22,8 +22,8 @@
 #include "ble.h"
 #include "display.h"
 
-#define THRESHOLD_TIME_ACTIVE_TO_INACTIVE_S	(25)	//milliseconds
-#define INITIAL_TIME_UNTIL_TRIGGER_FOR_BAD_POSTURE_S	(10)	//milliseconds
+#define THRESHOLD_TIME_ACTIVE_TO_INACTIVE_S	(90)	//Seconds
+#define INITIAL_TIME_UNTIL_TRIGGER_FOR_BAD_POSTURE_S	(30)	//Seconds
 
 
 //Declarations

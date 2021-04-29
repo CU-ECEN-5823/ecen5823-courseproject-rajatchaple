@@ -1,5 +1,5 @@
 /*********************************************************************************************
- *  @file sensors_config.c
+ *  @file proximity.c
  *	@brief This file contains sensors configuration for
  *			1) proximity sensor
  *
@@ -15,7 +15,7 @@
 #include "scheduler.h"
 #include "log.h"
 #include "i2cspmhalconfig.h"
-#include "sensors_config.h"
+#include "proximity.h"
 #include "gpio.h"
 
 uint8_t read_data;
@@ -23,17 +23,17 @@ uint8_t read_data;
 /*****DEFINES*****/
 
 #define TEST_COUNT_DATA_RANGE_VALIDITY	(2)
-#define TEST_COUNT_GESTURE				(1)
-//#define PROXIMITY_COMMAND_REG_ADDRESS	0x80
-//#define PROXIMITY_PERIODIC_MEAS_MODE 	0b11100011
+#define TEST_COUNT_GESTURE				(2)
 
 
 static uint32_t event_status;
 
-#ifndef USE_I2CSPM
-
-extern I2C_TransferReturn_TypeDef transfer_status;
-
+/** -------------------------------------------------------------------------------------------
+ * @brief i2c routine to read data from sensor over i2c (blocking read)
+ *
+ * @param register of proximity sensor, pointer to a data buffer
+ * @return None
+ *-------------------------------------------------------------------------------------------- **/
 void blocking_read_i2c(uint8_t reg, uint8_t* data_buffer)
 {
 	uint32_t timeout = I2CSPM_TRANSFER_TIMEOUT;//I2CSPM_TRANSFER_TIMEOUT;
@@ -48,7 +48,6 @@ void blocking_read_i2c(uint8_t reg, uint8_t* data_buffer)
 				break;
 			else if(event_status & I2C_TRANSFER_RETRY)
 				i2c_write(&reg);
-
 		}
 		//timeout to retry in case there are no interrupts to continue I2C transfer
 		if(!(timeout--))
@@ -56,9 +55,7 @@ void blocking_read_i2c(uint8_t reg, uint8_t* data_buffer)
 			i2c_write(&reg);
 			timeout = I2CSPM_TRANSFER_TIMEOUT*10;
 		}
-
 	}
-
 
 	i2c_read(data_buffer);
 	while(1)
@@ -71,7 +68,6 @@ void blocking_read_i2c(uint8_t reg, uint8_t* data_buffer)
 			else if(event_status & I2C_TRANSFER_RETRY)
 				i2c_read(data_buffer);
 		}
-
 		if(!(timeout--))
 		{
 			i2c_read(data_buffer);
@@ -82,6 +78,12 @@ void blocking_read_i2c(uint8_t reg, uint8_t* data_buffer)
 
 }
 
+/** -------------------------------------------------------------------------------------------
+ * @brief i2c routine to write data to sensor over i2c (blocking write)
+ *
+ * @param register of proximity sensor, pointer to a data buffer
+ * @return None
+ *-------------------------------------------------------------------------------------------- **/
 void blocking_write_i2c(uint8_t reg, uint8_t data)
 {
 
@@ -112,50 +114,20 @@ void blocking_write_i2c(uint8_t reg, uint8_t data)
 
 	}
 }
-#else
-
-#include "em_i2c.h"
-
-void blocking_read_i2c(uint8_t reg)
-{
-	I2C_TransferReturn_TypeDef ret = i2c_write(reg);
-
-	if(ret != i2cTransferDone)
-		LOG_INFO("i2c read failed 1");
-
-	ret = i2c_read(reg);
-
-	if(ret != i2cTransferDone)
-		LOG_INFO("i2c read failed 2");
-}
-
-void blocking_write_i2c(uint8_t reg, uint8_t data)
-{
-	uint8_t data_2bytes[2];
-	data_2bytes[0] = reg;
-	data_2bytes[1] = data;
-	I2C_TransferReturn_TypeDef ret = i2c_write_write(data_2bytes);
-
-	if(ret != i2cTransferDone)
-		LOG_INFO("i2c write failed 1");
-
-//	ret = i2c_write(data);
-//
-//	if(ret != i2cTransferDone)
-//		LOG_INFO("i2c write failed 2");
-}
-
-#endif
 
 
+/** -------------------------------------------------------------------------------------------
+ * @brief configure proximity sensor
+ *
+ * @param None
+ * @return None
+ * resource: vcnl4010.pdf
+ *-------------------------------------------------------------------------------------------- **/
 void proximity_sensor_config()
 {
-	int i;
-
-	blocking_write_i2c(0x80, 0b10000011);
-	blocking_write_i2c(0x82, 0b00000011);	//~4 readings per second
-	blocking_write_i2c(0x83, 2);
-#ifdef INTERRUPT_BASED_PROXIMITY_MEASUREMENT
+	blocking_write_i2c(0x80, 0b10000011);	//Enable proximity measurement
+	blocking_write_i2c(0x82, 0b00000011);	//~16 readings per second
+	blocking_write_i2c(0x83, 15);			//Setting up IR LED current to 150mA
 	//setting up thresholds for interrupt generations
 	//Low Threshold
 	blocking_write_i2c(0x8A, 0);
@@ -165,41 +137,25 @@ void proximity_sensor_config()
 	blocking_write_i2c(0x8D, (PROXIMITY_SENSOR_THRESHOLD_VALUE & 0x00FF));
 	//clearing interrrupt from interrupt status register of proximity
 	blocking_write_i2c(0x8E,0x01);
-#endif
 
 
-	LOG_INFO("********************************");
-	LOG_INFO("Reading all registers");
+	LOG_DEBUG("********************************");
+	LOG_DEBUG("Reading all registers");
 	for(uint8_t reg = 0x80; reg< 0x90; reg++)
 	{
 		blocking_read_i2c(reg, &read_data);
-		LOG_INFO("cmd register : %x value : %x", reg, read_data);
+		LOG_DEBUG("cmd register : %x value : %x", reg, read_data);
 	}
-
-//	while(1)
-//	{
-//		uint8_t prox_dat_rdy_status;
-//		blocking_read_i2c(0x80, &read_data);
-//		prox_dat_rdy_status = (read_data & 0b00100000) >> 5;
-//
-//		uint16_t prox_readings = 0;
-//		blocking_read_i2c(0x87, &read_data);
-//		prox_readings = read_data;
-//		prox_readings <<= 8;
-//		blocking_read_i2c(0x88, &read_data);
-//		prox_readings |= read_data;
-//
-//		LOG_INFO("Prox_dat_rdy status : %x value : %d",
-//				prox_dat_rdy_status, 	//is prox reading ready
-//				prox_readings);
-//
-//
-//		i = 1000000;while(i--);
-//	}
 
 }
 
-
+/** -------------------------------------------------------------------------------------------
+ * @brief wrapper for reading proximity sensor's register values
+ *
+ * @param data to be read
+ * @return None
+ * resource: vcnl4010.pdf
+ *-------------------------------------------------------------------------------------------- **/
 uint16_t proximity_sensor_read(proximity_sensor_read_t data_to_be_read)
 {
 	uint8_t prox_dat_rdy_status = 0;
@@ -208,12 +164,12 @@ uint16_t proximity_sensor_read(proximity_sensor_read_t data_to_be_read)
 	switch(data_to_be_read)
 	{
 		case PROXIMITY_PRODUCT_ID:
-			blocking_read_i2c(0x81, &read_data);
+			blocking_read_i2c(0x81, &read_data);	//checking if product id = 0x21
 			prox_readings = read_data;
 			break;
 
 		case IR_LED_CURRENT:
-			blocking_read_i2c(0x81, &read_data);
+			blocking_read_i2c(0x83, &read_data);	//reading IR LED current register
 			prox_readings = (read_data & 0b00111111) * 10;
 			break;
 
@@ -225,10 +181,10 @@ uint16_t proximity_sensor_read(proximity_sensor_read_t data_to_be_read)
 				prox_dat_rdy_status = (read_data & 0b00100000) >> 5;
 			}
 			gpioLed0SetOff();
-			blocking_read_i2c(0x87, &read_data);
+			blocking_read_i2c(0x87, &read_data);	//Reading proximity result register
 			prox_readings = read_data;
 			prox_readings <<= 8;
-			blocking_read_i2c(0x88, &read_data);
+			blocking_read_i2c(0x88, &read_data);	//Reading proximity result register
 			prox_readings |= read_data;
 			break;
 
@@ -238,22 +194,20 @@ uint16_t proximity_sensor_read(proximity_sensor_read_t data_to_be_read)
 
 	}
 
-//	while(prox_dat_rdy_status == 0)
-//		{	gpioLed0SetOn();
-//			blocking_read_i2c(0x80, &read_data);
-//			prox_dat_rdy_status = (read_data & 0b00100000) >> 5;
-//		}
-//	gpioLed0SetOff();
-//
-//			blocking_read_i2c(0x87, &read_data);
-//			prox_readings = read_data;
-//			prox_readings <<= 8;
-//			blocking_read_i2c(0x88, &read_data);
-//			prox_readings |= read_data;
-
 	return prox_readings;
 }
 
+/** -------------------------------------------------------------------------------------------
+ * @brief test sequence for proximity sensor.
+ * 			checks if
+ * 			-I2C communication with sensor is successful
+ * 			-data is in valid range
+ * 			-gesture for TEST_COUNT_GESTURE times (program is blocked until gestures are performed)
+ *
+ * @param none
+ * @return None
+ * resource: vcnl4010.pdf
+ *-------------------------------------------------------------------------------------------- **/
 void test_proximity_sensor()
 {
 	bool gesture_event = false;
@@ -314,32 +268,9 @@ void test_proximity_sensor()
 			default:
 				break;
 		}
-
-
-
 	}
 
-//	while(test_count)
-//	{
-//		if(gesture_event == false)
-//		{
-//			{
-//				gpioLed1SetOn();
-//				gesture_event = true;
-//			}
-//		}
-//		else
-//		{
-//			if(proximity_sensor_read() < PROXIMITY_SENSOR_THRESHOLD_VALUE)
-//			{
-//				gpioLed1SetOff();
-//				gesture_event = false;
-//				test_count--;
-//			}
-//		}
-//
-//	}
-	LOG_INFO("Test passed for proximity sensor");
+	LOG_DEBUG("Test passed for proximity sensor");
 
 }
 
