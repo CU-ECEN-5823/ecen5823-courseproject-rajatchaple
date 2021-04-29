@@ -595,9 +595,9 @@ void state_machine(runqueue func)
 			if (func == 70)
 			{
 
-				FXAS_CTRL_REG0_signal_start();
-				for (int i = 0; i < 50000; i++);
+				FXAS_CTRL_REG0_signal_start();			
 				next_state = STATE_GYRO_CTRL_REG1_START;
+				
 			}
 			break;
 
