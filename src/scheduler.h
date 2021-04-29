@@ -123,18 +123,6 @@ typedef enum
 
 } transfer_states_t;
 
-typedef enum
-{
-
-	FIRST_TIME_PB1_PRESS,
-	READ_CHARACTERISTIC_VALUE,
-	GATT_CONNECTION_CLOSED,
-	GATT_TRANSFER_STATE_SIZE,
-
-} gatt_transfer_states_t;
-
-
-
 uint8_t events_present(void);
 
 runqueue get_event(void);

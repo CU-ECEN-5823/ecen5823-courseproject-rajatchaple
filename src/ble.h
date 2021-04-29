@@ -129,8 +129,7 @@ float bitstream_to_float(const uint8_t *);
 
 #define IO_CAPABILITY  				   0 // 0=DISPLAYONLY
 #define SM_CONFIG_FLAGS 			  (0x0A) // encrypted link and bonding should be confirmed
-//#define IO_CAPABILITY  				   1 // 0=DISPLAYYESNO
-//#define SM_CONFIG_FLAGS 			  (0x09) // MITM protection, bonding should be confirmed
+
 
 #include "native_gecko.h"
 #include "scheduler.h"
@@ -151,12 +150,6 @@ extern uint32_t service_handle;
 extern uint16_t characteristic_handle;
 extern uint8_t characteristic_properties;
 extern uint8_t characterstic_flag;
-
-// 	ECEN5823 Encryption test service
-extern const uint8_t ecen5823_encryption_test_service_UUID[16];
-
-// ECEN5823 Encrypted button state characteristic
-extern const uint8_t ecen5823_encryption_button_state_UUID[16];
 
 
 void handle_ble_event(struct gecko_cmd_packet *evt);

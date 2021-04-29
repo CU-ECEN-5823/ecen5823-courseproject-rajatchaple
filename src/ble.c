@@ -815,14 +815,12 @@ float bitstream_to_float(const uint8_t *ptr_to_byte_array)
 // globals
 uint32_t signal;
 uint8_t conn_handle;
-gatt_transfer_states_t gatt_state = 0;
+
 
 // Service handle
 uint32_t service_handle;
 
 
-// Server security - MITM
-uint32_t passkey;
 
 uint8_t axis_orientation_indication_en_flag = 0;
 uint8_t time_until_trigger_indication_en_flag = 0;
@@ -830,7 +828,7 @@ uint8_t connected_status_flag = 0;
 
 uint8_t first_time_tut_send_flag = 0;
 
-uint8_t time_until_trigger[3] = {10, 20, 30};
+uint8_t time_until_trigger[3] = {30, 40, 50};
 uint8_t current_tut_index = 0;
 uint8_t tut_options_max = 3;
 
@@ -911,17 +909,8 @@ void handle_ble_event(struct gecko_cmd_packet *evt)
 			displayPrintf(DISPLAY_ROW_CONNECTION, "Connected");
 
 			conn_handle = evt->data.evt_le_connection_opened.connection;
-/*			// 60 -> 75ms connection interval
-			// 3 slave latency slots -> 4 * 75 = 300ms. But slaves listens the 4th slot. So 4-1 = 3.
-			// 70 -> supervisor timeout = (1*3)*(75*2) = 600 -> 700ms (some value greater than 600ms). 70 * 10ms. So put 70.
-			struct gecko_msg_le_connection_set_parameters_rsp_t *ret3 =  gecko_cmd_le_connection_set_parameters(conn_handle, 60, 60, 3, 70);
-			if (ret3->result != 0)
-			{
-				#if INCLUDE_LOGGING
-					LOG_ERROR("ERROR: %d | response code from gecko_cmd_le_connection_set_parameters()", ret3->result);
-				#endif
-			}*/
 
+			// gecko_cmd_le_connection_set_parameters() removed. Connection params are set on client side
 
 			//Configure security manager here
 			struct gecko_msg_sm_configure_rsp_t *ret8 = gecko_cmd_sm_configure(SM_CONFIG_FLAGS, IO_CAPABILITY);
@@ -1117,7 +1106,7 @@ void handle_ble_event(struct gecko_cmd_packet *evt)
 			{
 				current_tut_index = (current_tut_index + 1 ) % tut_options_max;
 
-				displayPrintf(DISPLAY_ROW_TUT, "TUT: %us", time_until_trigger[current_tut_index]);
+				displayPrintf(DISPLAY_ROW_TUT, "Bad Pos TO: %us", time_until_trigger[current_tut_index]);
 
 				if (remote_gatt_cmd_in_progress == 0)
 				{
@@ -1272,7 +1261,7 @@ void handle_ble_event(struct gecko_cmd_packet *evt)
 
 		// for assignment questions only
 		case gecko_evt_le_connection_parameters_id:
-		{
+/*		{
 			uint16_t value = evt->data.evt_le_connection_parameters.interval;
 			{
 				#if INCLUDE_LOGGING
@@ -1296,7 +1285,7 @@ void handle_ble_event(struct gecko_cmd_packet *evt)
 				#endif
 			}
 
-		}
+		}*/
 			break;
 
 		case gecko_evt_hardware_soft_timer_id:
@@ -1336,7 +1325,7 @@ void handle_ble_event(struct gecko_cmd_packet *evt)
 		bonded = 2;
 
 		displayPrintf(DISPLAY_ROW_PASSKEY, " ");
-		displayPrintf(DISPLAY_ROW_TUT, "TUT: %us", time_until_trigger[current_tut_index]);
+		displayPrintf(DISPLAY_ROW_TUT, "Bad Pos TO: %us", time_until_trigger[current_tut_index]);
 		displayPrintf(DISPLAY_ROW_CONNECTION, "Bonded");
 
 

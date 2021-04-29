@@ -82,7 +82,7 @@ void gpioSetDisplayExtcomin(bool state);
 #define I2C0_SCL_pin   10
 #define I2C0_SDA_pin   11
 
-// Server security - MITM
+
 #define PB0_port  gpioPortF
 #define PB0_pin   6
 #define PB1_port  gpioPortF
@@ -100,17 +100,12 @@ void gpioSetDisplayExtcomin(bool state);
 extern uint8_t button_value;
 
 void gpioInit();
-void gpioLed0SetOn();
-void gpioLed0SetOff();
-void gpioLed1SetOn();
-void gpioLed1SetOff();
 void gpioI2CSensorEnSetOn();
 void gpioI2CSensorEnSetOff();
 void gpioSetDisplayExtcomin(bool);
 
 void gpio_set_event_PB0_press();
-void gpio_set_event_PB0_release();
-void gpio_set_event_PB1_press();
+
 
 void gpioIMUSensorEnSetOn();
 void gpioIMUSensorEnSetOff();

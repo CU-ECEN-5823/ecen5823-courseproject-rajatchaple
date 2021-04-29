@@ -96,7 +96,7 @@ int appMain(gecko_configuration_t *config);
 // I2C works in EM1
 #define SLEEP_MODE_BLOCKED sleepEM3
 #define ENABLE_SLEEPING 1
-#define LETIMER_PERIOD_MS 3000 // 3s
+#define LETIMER_PERIOD_MS 5000// 5s
 #define BOND_DISCONNECT 0
 
 /*

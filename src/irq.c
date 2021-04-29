@@ -204,7 +204,7 @@ void LETIMER0_IRQHandler(void)
 
 				// Increment millis_cnt here. Timestamp is based on UF interrupt (3000ms) + current counter value.
 				// Calculation taken from lecture slides.
-				millis_cnt = millis_cnt + 3000 + (3000 - LETIMER_CounterGet(LETIMER0));
+				millis_cnt = millis_cnt + 5000 + (5000 - LETIMER_CounterGet(LETIMER0));
 
 				CORE_EXIT_CRITICAL();
 
@@ -287,43 +287,10 @@ void GPIO_EVEN_IRQHandler(void)
 
 		}
 
-		// When released
-		if (inp_state == 1)
-		{
-
-			gpio_set_event_PB0_release();
-
-		}
-
 	}
 
 }
 
-
-
-// Configured PB1 interrupt on falling edge, i.e. when it is pressed
-// Last argument = true. The pin is pulled high.
-void GPIO_ODD_IRQHandler(void)
-{
-
-	if (GPIO_IntGetEnabled()== (1 << PB1_pin))
-	{
-
-		GPIO_IntClear(1 << PB1_pin);
-
-		// Do something here.
-		uint8_t inp_state = GPIO_PinInGet(PB1_port, PB1_pin);
-
-		// When pressed
-		if (inp_state == 0)
-		{
-			gpio_set_event_PB1_press();
-
-		}
-
-	}
-
-}
 
 
 void I2C0_IRQHandler(void)

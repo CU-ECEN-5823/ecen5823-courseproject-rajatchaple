@@ -76,6 +76,7 @@ void I2C0_init(void)
 void turn_on_IMU(void)
 {
 
+
 	// Enable SCL and SDA lines.
 	GPIO_PinModeSet(I2C0_SCL_port, I2C0_SCL_pin, gpioModeWiredAndPullUp, true);
 	GPIO_PinModeSet(I2C0_SDA_port, I2C0_SDA_pin, gpioModeWiredAndPullUp, true);
@@ -313,7 +314,7 @@ void FXAS_CTRL_REG1_signal_start(void)
 void wait_for_65_millis(void)
 {
 
-	timerWaitUs(100000); // Wait for at least 65ms
+	timerWaitUs(80000); // Wait for at least 65ms
 
 }
 
