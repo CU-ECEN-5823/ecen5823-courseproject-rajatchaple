@@ -1,10 +1,12 @@
 /*********************************************************************************************
  *  @file proximity.c
- *	@brief This file contains sensors configuration for
- *			1) proximity sensor
+ *	@brief This file contains sensors configuration for proximity sensor
  *
- *  @author : Rajat Chaple
- *  @date Created on: Apr 15, 2021
+ *
+ *  @author : Rajat Chaple (GATT client code)
+ *
+ *
+ *  @date      April 29, 2020 (last update)
  **********************************************************************************************/
 
 /*****INCLUDES*****/

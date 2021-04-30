@@ -1,9 +1,11 @@
 /*********************************************************************************************
  *  @file ble.h
- *	@brief This file contains defines, includes anf function prototypes for ble.c
+ *	@brief This file contains defines, includes and function prototypes for ble.c
  *
- *  @author : Rajat Chaple
- *  @date Created on: Feb 25, 2021
+ *  @authors : Rajat Chaple (GATT client code)
+ *  		   Sundar Krishnakumar (GATT server code)
+ *
+ *  @date      April 29, 2020 (last update)
  **********************************************************************************************/
 
 #include "ble_device_type.h"

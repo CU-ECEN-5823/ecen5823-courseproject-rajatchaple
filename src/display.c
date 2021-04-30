@@ -5,13 +5,15 @@
  *      Author: Dan Walkes
  *      Edited: Dave Sluiter, Jan 5, 2021, mods to get default file to compile without warnings
  *              and moved the list of includes to .h file.
+ *              Rajat Chaple (GATT client code)
+ *  		   	Sundar Krishnakumar (GATT server code)
  *
- *  Students: There are 3 edits required in this file, 2 edits to function displayInit()
- *            1 edit to function displayUpdate().
- *            See comments in these functions.
+ * @date      April 29, 2020 (last update)
  *
  * @brief Contains functions used to control the LCD display on the Silicon Labs
  * blue gecko development board for ECEN 5823
+ *
+ *
  */
 
 #include "ble_device_type.h"
@@ -292,9 +294,6 @@ void displayUpdate()
 
 
 #include "display.h"
-
-
-
 
 #if ECEN5823_INCLUDE_DISPLAY_SUPPORT
 

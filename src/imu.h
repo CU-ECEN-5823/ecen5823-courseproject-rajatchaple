@@ -1,25 +1,20 @@
-/***********************************************************************
- * @file      imu.h
- * @brief     Contains imu sensor related headers.
+/*********************************************************************************************
+ *  @file  imu.h
+ *	@brief This file contains IMU sensor related headers.
  *
- * @author	  Sundar Krishnakumar, sundar.krishnakumar@Colorado.edu (updates)
- * @date      April 16, 2020 (last update)
- *
- * @institution University of Colorado Boulder (UCB)
- * @course      ECEN 5823-001: IoT Embedded Firmware (Spring 2021)
- * @instructor  David Sluiter
- *
- * @assignment ecen5823-courseproject-rajatchaple
- * @due        April 16, 2020
- *
- * @resources  Utilized Silicon Labs' EMLIB peripheral libraries to
- * implement functionality.
+ *  @authors : Sundar Krishnakumar (GATT server code)
  *
  *
- * @copyright  All rights reserved. Distribution allowed only for the
- * use of assignment grading. Use of code excerpts allowed at the
- * discretion of author. Contact for permission.
- */
+ *  @date      April 29, 2020 (last update)
+ *
+ *  @resources  Utilized Silicon Labs' EMLIB peripheral libraries to
+ *              implement functionality.
+ *
+ *  @reference https://github.com/adafruit/Adafruit_FXAS21002C/blob/master/Adafruit_FXAS21002C.cpp
+ * 			   https://github.com/adafruit/Adafruit_FXOS8700/blob/master/Adafruit_FXOS8700.cpp
+ *
+ *
+ **********************************************************************************************/
 #include "ble_device_type.h"
 #if BUILD_INCLUDES_BLE_CLIENT
 
@@ -37,7 +32,7 @@
 #define FXOS8700_ADDRESS (0x1F) // 00111117 bit slave address
 
 #define FXOS8700CQ_XYZ_DATA_CFG 		0x0E
-#define FXOS8700CQ_CTRL_REG1 				0x2A
+#define FXOS8700CQ_CTRL_REG1 			0x2A
 #define FXOS8700CQ_M_CTRL_REG1 			0x5B
 #define FXOS8700CQ_M_CTRL_REG2 			0x5C
 

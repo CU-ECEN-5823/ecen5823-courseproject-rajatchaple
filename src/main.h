@@ -4,11 +4,10 @@
  *		   configure energy mode using macro LOWEST_ENERGY_MODE
  *
  *  @author : Dave Sluiter
- *  @date Created on: Jan 26, 2021
+ *            Rajat Chaple (GATT client code)
+ *  		  Sundar Krishnakumar (GATT server code)
  *
- *  Updated by Rajat Chaple Jan 29, 2020. Added GPIO Initialization and LED blinking.
- *  Updated by Rajat Chaple Feb 4, 2020. 	Removed delatApproxOneSecond() declaration
- *  										Added Energy Mode and LETIMER duty cycle configuration
+ *  @date    April 29, 2020 (last update)
  **********************************************************************************************/
 
 #include "ble_device_type.h"

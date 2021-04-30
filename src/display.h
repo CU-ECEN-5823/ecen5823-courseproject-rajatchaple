@@ -4,31 +4,10 @@
  *  Created on: Jan 1, 2019
  *      Author: Dan Walkes
  *      Edited: Dave Sluiter, Dec 1 2020
+ *				Rajat Chaple (GATT client code)
+ *       		Sundar Krishnakumar (GATT server code)
  *
- * Use these steps to integrate the display module with your source code:
- *
- * 3 edits are required to display.c, see the header comment at the top of display.c
- *
- * 1) Add a BT Stack timer which can provide a 1Hz update for the display EXTCOMIN pin
- *  	through a call to displayUpdate().  Include needed header files in the top of
- *  	display.c.  #define these values in appropriate header files:
- *  	#define SCHEDULER_SUPPORTS_DISPLAY_UPDATE_EVENT 1
- *  	#define TIMER_SUPPORTS_1HZ_TIMER_EVENT	1
- *
- * 2) Create functions gpioI2CSensorEnSetOn() and gpioSetDisplayExtcomin(bool value) in
- *      your gpio.c and gpio.h files, and include.
- *
- * 		#define GPIO_SET_DISPLAY_EXT_COMIN_IMPLEMENTED 	1
- * 		and
- *		#define GPIO_DISPLAY_SUPPORT_IMPLEMENTED		1
- *		definitions in your gpio.h file
- *
- *		** Note that the Blue Gecko development board uses the same pin for both the sensor and display enable
- *		pins.  This means you cannot disable the temperature sensor for load power management if enabling the display.  
- *		Your GPIO routines need to account for this **
- *
- * 3) Call displayInit() before attempting to write the display. A good place to call this
- *      would be your initialization code prior to your main while (1) loop,
+ * @date      April 29, 2020 (last update)
  */
 
 #include "ble_device_type.h"

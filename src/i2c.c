@@ -2,11 +2,12 @@
  *  @file i2c.c
  *	@brief This file contains i2c configuration and data transfer functions
  *
- *  @author : Rajat Chaple
- *  @date Created on: Feb 11, 2021
+ *  @author : Rajat Chaple (GATT client code)
  *
- *  Updated by Rajat Chaple Feb 20, 2020. Changed - Polling I2C transfer to Interrupt based
+ *
+ * @date      April 29, 2020 (last update)
  **********************************************************************************************/
+
 #include "ble_device_type.h"
 #if BUILD_INCLUDES_BLE_CLIENT
 #include "log.h"

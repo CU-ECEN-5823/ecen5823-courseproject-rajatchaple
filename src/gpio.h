@@ -5,10 +5,12 @@
  *  @author : Dan Walkes
  *  @date Created on: Dec 12, 2018
  *
- *  Updated by Dave Sluiter Sept 7, 2020. moved #defines from .c to .h file.
- *  Updated by Dave Sluiter Dec 31, 2020. Minor edits with #defines.
- *  Updated by Rjajat Chaple Feb 12, 2020. I2C sensor enable gpio config added
-**********************************************************************************************/
+ *  Updated by  Dave Sluiter Sept 7, 2020. moved #defines from .c to .h file.
+ *				Rajat Chaple (GATT client code)
+ *       		Sundar Krishnakumar (GATT server code)
+ *
+ * @date        April 29, 2020 (last update)
+ **********************************************************************************************/
 #include "ble_device_type.h"
 #if BUILD_INCLUDES_BLE_CLIENT
 #ifndef SRC_GPIO_H_

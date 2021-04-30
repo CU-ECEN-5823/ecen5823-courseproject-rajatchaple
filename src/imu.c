@@ -1,27 +1,20 @@
-/***********************************************************************
- * @file      imu.c
- * @brief     Contains IMU sensor library. Works based on interrupt based I2C.
+/*********************************************************************************************
+ *  @file imu.c
+ *	@brief This file contains IMU sensor library. Works based on interrupt based I2C.
  *
- * @author	  Sundar Krishnakumar, sundar.krishnakumar@Colorado.edu (updates)
- * @date      April 16, 2020 (last update)
+ *  @authors : Sundar Krishnakumar (GATT server code)
  *
- * @institution University of Colorado Boulder (UCB)
- * @course      ECEN 5823-001: IoT Embedded Firmware (Spring 2021)
- * @instructor  David Sluiter
  *
- * @assignment ecen5823-courseproject-rajatchaple
- * @due        April 16, 2020
+ *  @date      April 29, 2020 (last update)
  *
- * @resources  Utilized Silicon Labs' EMLIB peripheral libraries to
- * implement functionality.
+ *  @resources  Utilized Silicon Labs' EMLIB peripheral libraries to
+ *              implement functionality.
  *
- * @ reference https://github.com/adafruit/Adafruit_FXAS21002C/blob/master/Adafruit_FXAS21002C.cpp
+ *  @reference https://github.com/adafruit/Adafruit_FXAS21002C/blob/master/Adafruit_FXAS21002C.cpp
  * 			   https://github.com/adafruit/Adafruit_FXOS8700/blob/master/Adafruit_FXOS8700.cpp
  *
- * @copyright  All rights reserved. Distribution allowed only for the
- * use of assignment grading. Use of code excerpts allowed at the
- * discretion of author. Contact for permission.
- */
+ *
+ **********************************************************************************************/
 #include "ble_device_type.h"
 #if BUILD_INCLUDES_BLE_CLIENT
 

@@ -2,8 +2,10 @@
  *  @file timers.h
  *	@brief includes, defines and function prototypes for timers.c
  *
- *  @author : Rajat Chaple
- *  @date Created on: Feb 4, 2021
+ *  @authors : Rajat Chaple (GATT client code)
+ *  		   Sundar Krishnakumar (GATT server code)
+ *
+ *  @date      April 29, 2020 (last update)
  **********************************************************************************************/
 #include "ble_device_type.h"
 #if BUILD_INCLUDES_BLE_CLIENT

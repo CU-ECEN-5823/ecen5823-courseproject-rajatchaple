@@ -5,9 +5,11 @@
  *  @author : Dan Walkes
  *  @date Created on: Dec 12, 2018
  *
- *  Updated by Dave Sluiter Dec 31, 2020. Minor edits with #defines.
- *  Updated by Rajat Chaple Jan 29, 2021. Changed GPIO Drive strength and added comments
- *  Updated by Rajat Chaple Feb 12, 2020. I2C sensor enable gpio config added
+ *  Updated by  Dave Sluiter Dec 31, 2020. Minor edits with #defines.
+ *				Rajat Chaple (GATT client code)
+ *       		Sundar Krishnakumar (GATT server code)
+ *
+ * @date        April 29, 2020 (last update)
  **********************************************************************************************/
 #include "ble_device_type.h"
 #if BUILD_INCLUDES_BLE_CLIENT

@@ -3,17 +3,10 @@
  *	@brief a main file with initializations, setup and actions
  *
  *  @author : Dave Sluiter
- *  @date Created on: Jan 26, 2021
+ *            Rajat Chaple (GATT client code)
+ *  		  Sundar Krishnakumar (GATT server code)
  *
- *  Updated by Rajat Chaple Jan 29, 2020. Added GPIO Initialization and LED blinking.
- *  Updated by Rajat Chaple Feb  4, 2020. 	Removed delayApproxOneSecond().
- *  										Added clock,timer sleep and interrupt configuration.
- *	Updated by Rajat Chaple Feb 12, 2020.	Added I2C configuration and Temperature read over
- *											I2C in blocking mode
- *	Updated by Rajat Chaple Feb 20, 2020.	Changed I2C configuration and Temperature read over
- *											I2C to nonblocking mode
- *	Updated by Rajat Chaple Feb 26, 2020.	Added sending temperature over BLE
- *	Updated by Rajat Chaple Mar 13, 2020.	Client functionality added
+ *  @date      April 29, 2020 (last update)
  **********************************************************************************************/
 
 #include "ble_device_type.h"

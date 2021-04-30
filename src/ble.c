@@ -3,10 +3,11 @@
  *	@brief This file contains event handler for ble events. THis handler sets advertising interval,
  *			connection interval, slave latency and Timeout.
  *
- *  @author : Rajat Chaple
- *  @date Created on: Feb 25, 2021
- *  @Resource https://docs.silabs.com/resources/bluetooth/codeexamples/
- 	 applicaCons/thermometer-example-with-efr32-internal-temperature-sensor/source/app.c
+ *  @authors : Rajat Chaple (GATT client code)
+ *  		   Sundar Krishnakumar (GATT server code)
+ *
+ *  @date      April 29, 2020 (last update)
+
  **********************************************************************************************/
 
 //Includes
@@ -150,12 +151,12 @@ void handle_ble_event_client(struct gecko_cmd_packet *event)
 				BTSTACK_CHECK_RESPONSE(gecko_cmd_le_gap_set_discovery_type(le_gap_phy_1m, 0));	//PHY = 1 and Scanning Type = Passive(0)
 				//setting up discovery timing
 				BTSTACK_CHECK_RESPONSE(gecko_cmd_le_gap_set_discovery_timing(le_gap_phy_1m, 80, 40));
-				//starting discovery
 
-				gecko_cmd_le_gap_set_conn_parameters(CONN_INTERVAL_MIN, CONN_INTERVAL_MAX,
+				// Set connection timing parameters
+				BTSTACK_CHECK_RESPONSE(gecko_cmd_le_gap_set_conn_parameters(CONN_INTERVAL_MIN, CONN_INTERVAL_MAX,
 						                                             CONN_SLAVE_LATENCY,
-						                                             CONN_TIMEOUT);
-
+						                                             CONN_TIMEOUT));
+				//starting discovery
 				BTSTACK_CHECK_RESPONSE(gecko_cmd_le_gap_start_discovery(le_gap_phy_1m, le_gap_discover_generic));
 
 				displayPrintf(DISPLAY_ROW_CONNECTION, "Discovering");
@@ -613,7 +614,7 @@ void handle_ble_event(struct gecko_cmd_packet *evt)
 
 			conn_handle = evt->data.evt_le_connection_opened.connection;
 
-			// gecko_cmd_le_connection_set_parameters() removed. Connection params are set on client side
+			// gecko_cmd_le_connection_set_parameters() removed. Connection parameters are set on client side
 
 			//Configure security manager here
 			struct gecko_msg_sm_configure_rsp_t *ret8 = gecko_cmd_sm_configure(SM_CONFIG_FLAGS, IO_CAPABILITY);

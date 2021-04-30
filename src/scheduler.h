@@ -2,8 +2,10 @@
  *  @file scheduler.h
  *	@brief This file contains defines, includes and function prototypes for scheduler.c
  *
- *  @author : Rajat Chaple
- *  @date Created on: Feb 11, 2021
+ *  @authors : Rajat Chaple (GATT client code)
+ *  		   Sundar Krishnakumar (GATT server code)
+ *
+ *  @date     April 29, 2020 (last update)
  **********************************************************************************************/
 
 #include "ble_device_type.h"

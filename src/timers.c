@@ -2,10 +2,10 @@
  *  @file timers.c
  *	@brief This file contains function definitions to handle timers initialization
  *
- *  @author : Rajat Chaple
- *  @date Created on: Feb 4, 2021
+ *  @authors : Rajat Chaple (GATT client code)
+ *  		   Sundar Krishnakumar (GATT server code)
  *
- *  Updated by Rajat Chaple Feb 20, 2020. changed timerWaitUs from olling based to Interrupt based
+ *  @date      April 29, 2020 (last update)
  **********************************************************************************************/
 
 #include "ble_device_type.h"

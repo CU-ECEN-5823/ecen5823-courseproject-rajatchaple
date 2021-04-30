@@ -2,11 +2,10 @@
  *  @file scheduler.c
  *	@brief This file contains Event management (scheduling)
  *
- *  @author : Rajat Chaple
- *  @date Created on: Feb 11, 2021
+ *  @authors : Rajat Chaple (GATT client code)
+ *  		   Sundar Krishnakumar (GATT server code)
  *
- *  Updated by Rajat Chaple Feb 20, 2020. State machine for I2C temp read added
- *  Updated by Rajat Chaple Feb 26, 2021. Temp sent as an indication
+ *  @date      April 29, 2020 (last update)
  **********************************************************************************************/
 
 #include "ble_device_type.h"
@@ -607,7 +606,6 @@ void state_machine(runqueue func)
 			if (func == 80)
 			{
 
-
 				FXAS_CTRL_REG1_signal_start();
 				next_state = STATE_WAIT_FOR_65_MILLIS;
 			}
@@ -618,10 +616,9 @@ void state_machine(runqueue func)
 			if (func == 90)
 			{
 
-
 				wait_for_65_millis();
-
 				next_state = STATE_ACC_MEASURE_START;
+
 			}
 			break;
 

@@ -2,8 +2,10 @@
  *  @file i2c.h
  *	@brief This file contains  defines, includes and function prototypes for i2c.c
  *
- *  @author : Rajat Chaple
- *  @date Created on: Feb 11, 2021
+ *  @author : Rajat Chaple (GATT client code)
+ *
+ *
+ *  @date      April 29, 2020 (last update)
  **********************************************************************************************/
 
 #include "ble_device_type.h"

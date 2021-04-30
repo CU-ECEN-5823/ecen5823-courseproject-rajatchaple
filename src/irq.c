@@ -2,12 +2,10 @@
  *  @file irq.c
  *	@brief This file contains Interrupt handlers
  *
- *  @author : Rajat Chaple
- *  @date Created on: Feb 4, 2020
+ *  @authors : Rajat Chaple (GATT client code)
+ *  		   Sundar Krishnakumar (GATT server code)
  *
- *  Updated by Rajat Chaple Feb 12, 2020. Removed LED toggling from ISR
- *  									  Added - setting event on Timer0 Underflow
- *  Updated by Rajat Chaple Feb 20, 2020. Added - letimerMilliseconds since startup
+ *  @date      April 29, 2020 (last update)
  **********************************************************************************************/
 
 #include "ble_device_type.h"

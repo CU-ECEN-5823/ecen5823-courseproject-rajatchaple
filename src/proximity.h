@@ -2,8 +2,10 @@
  *  @file proximity.h
  *	@brief This file contains defines, includes and typedefs for proximity.c
  *
- *  @author : Rajat Chaple
- *  @date Created on: Apr 15, 2021
+ *  @author : Rajat Chaple (GATT client code)
+ *
+ *
+ *  @date     April 29, 2020 (last update)
  **********************************************************************************************/
 #include "ble_device_type.h"
 #if BUILD_INCLUDES_BLE_CLIENT
