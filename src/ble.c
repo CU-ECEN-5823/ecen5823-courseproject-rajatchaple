@@ -348,7 +348,7 @@ void handle_ble_event_client(struct gecko_cmd_packet *event)
 
 						y_axis_value = (charValue[1] << 0) + (charValue[2] << 8);
 						// Display to LCD
-						// displayPrintf(DISPLAY_ROW_POSTURE, "Temp=%0.1f degC", temp);
+
 						LOG_DEBUG("Y-xis value: %u millirad/s", y_axis_value);
 						// Send confirmation for the indication
 						BTSTACK_CHECK_RESPONSE(gecko_cmd_gatt_send_characteristic_confirmation(event->data.evt_gatt_characteristic_value.connection));
@@ -388,7 +388,7 @@ void handle_ble_event_client(struct gecko_cmd_packet *event)
 						pobp_tut_timer_seconds_initial_value = (charValue[1] << 0);
 						pobp_tut_timer_seconds = pobp_tut_timer_seconds_initial_value;
 						// Display to LCD
-						// displayPrintf(DISPLAY_ROW_POSTURE, "Temp=%0.1f degC", temp);
+
 						LOG_DEBUG("TUT Seconds: %u s", pobp_tut_timer_seconds);
 						BTSTACK_CHECK_RESPONSE(gecko_cmd_gatt_send_characteristic_confirmation(event->data.evt_gatt_characteristic_value.connection));
 
@@ -489,26 +489,7 @@ bool is_device_found_by_address(bd_addr address_of_discovered_device, bd_addr re
 }
 
 
-/** ---------------------------------------------------------------------------------------------------------
- * @brief Converts temperature to float format
- *
- * @param bitstream received over bluetooth
- * @return float converted value of temperature
- *--------------------------------------------------------------------------------------------------------- **/
-float bitstream_to_float(const uint8_t *ptr_to_byte_array)
-{
-	float temperature = 0;
-	temperature = (ptr_to_byte_array[1] << 0) | (ptr_to_byte_array[2] << 8) | (ptr_to_byte_array[3] << 16);
 
-	// msb of [3] defines sign
-	if (ptr_to_byte_array[3] & 0x80)
-	{
-		temperature = -temperature;
-	}
-	temperature = temperature / 1000;
-
-	return temperature;
-} // bitstream_to_float
 
 #endif
 

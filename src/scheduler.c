@@ -29,15 +29,15 @@ uint16_t pobp_tut_timer_seconds = INITIAL_TIME_UNTIL_TRIGGER_FOR_BAD_POSTURE_S;
 
 static uint32_t event_status  = 0x00000000;
 extern bool is_bad_posture;
-float temperature = 0;
-char temperature_str[13];
+
+
 const uint8_t command_for_clearing_prox_interrupt[2] = {0x8E,0x01};	//register 8E and data 00
 
 
 /** ---------------------------------------------------------------------------------------------------------
- * @brief state machine for measuring temperature over i2c in event driven mode using followingstate machines
+ * @brief state machine for measuring proximity over i2c in event driven mode using following state machines
  *
- * @param None
+ * @param event handle: evt
  * @return None
  *--------------------------------------------------------------------------------------------------------- **/
 void event_handler_proximity_state(struct gecko_cmd_packet* evt)

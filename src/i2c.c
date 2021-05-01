@@ -15,11 +15,10 @@
 
 
 
-#define SENSOR_I2C_ADDRESS 0x13	//temperature sensor Si70210x40
+#define SENSOR_I2C_ADDRESS 0x13 // Proximity sensor adrress
 
 I2C_TransferSeq_TypeDef seq;
 I2C_TransferReturn_TypeDef transfer_status;
-uint8_t write_data = (uint8_t)CMD_MEASURE_TEMPERATURE;
 uint8_t read_data[2] = {0};
 
 uint8_t read_data_i2c = 0;
@@ -91,7 +90,7 @@ I2C_TransferReturn_TypeDef i2c_write(uint8_t* data)
  * @brief i2c routine to read data from sensor over i2c
  *
  * @param true/false
- * @return Temperature value
+ * @return Read value
  *-------------------------------------------------------------------------------------------- **/
 I2C_TransferReturn_TypeDef i2c_read(uint8_t* data_buffer)
 {

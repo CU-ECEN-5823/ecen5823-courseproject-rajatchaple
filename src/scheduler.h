@@ -29,21 +29,6 @@
 
 
 //Declarations
-typedef enum temp_sensor_states{
-	STATE0_TIMER_WAIT,
-	STATE1_WAIT_FOR_POWER_UP,
-	STATE2_WAIT_FOT_I2C_WRITE_COMPLETE,
-	STATE3_WAIT_FOR_I2C_READ_START,
-	STATE4_WAIT_FOR_I2C_READ_COMPLETE,
-	MY_NUM_STATES
-}temp_sensor_states_t;
-
-//typedef enum proximity_sensor_states{
-//	STATE0_TIMER_WAIT_FOR_ELAPSED_TIME,
-//	STATE1_WAIT_FOR_READING_INTERVAL,
-//	NUM_STATES
-//}proximity_sensor_states_t
-
 enum events{
 	LETIMER_UF_INTERRUPT_EVENT = 0x00000001,
 	LETIMER_COMP1_INTERRUPT_EVENT = 0x00000002,
@@ -69,9 +54,8 @@ void scheduler_set_event_I2C_transfer_retry(void);
 uint32_t get_event(void);
 bool event_present(void);
 void event_handler_proximity_state(struct gecko_cmd_packet* evt);
-void state_machine_measure_temperature(struct gecko_cmd_packet* evt);
 void state_machine_proximity_state(struct gecko_cmd_packet* evt);
-void indicate_temperature_over_ble(float);
+
 
 #endif /* SCHEDULER_H */
 

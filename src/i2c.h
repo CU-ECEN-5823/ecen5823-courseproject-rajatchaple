@@ -20,7 +20,7 @@
 #include "gpio.h"
 
 //defines
-#define CMD_MEASURE_TEMPERATURE 	  		(0xF3)
+
 
 //function prototypes
 void i2c_init(void);
